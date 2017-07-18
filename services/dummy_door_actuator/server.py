@@ -1,23 +1,27 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 import sys
 import Ice
 import time
-Ice.loadSlice('./slices/services.ice --all -I .')
+
+CITISIM_SLICE = '/usr/share/slice/citisim'
+Ice.loadSlice('{}/services.ice --all'.format(CITISIM_SLICE))
 import SmartObject
 
-class ActuatorI(SmartObject.Actuator):
-    def set(self, meta, current=None):
+
+class ActuatorI(SmartObject.DigitalSink):
+    def notify(self, value, source, meta, position, current=None):
         timeDiff = int(time.time()) - meta.timestamp
         if timeDiff < 15:
             print("Puerta abierta.\n")
+
 
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
         servant = ActuatorI()
 
-        adapter = broker.createObjectAdapter("ActuatorAdapter")
+        adapter = broker.createObjectAdapter("Adapter")
         proxy = adapter.add(servant, broker.stringToIdentity("actuator"))
 
         print(proxy)
@@ -28,5 +32,6 @@ class Server(Ice.Application):
         broker.waitForShutdown()
 
         return 0
+
 
 sys.exit(Server().main(sys.argv))

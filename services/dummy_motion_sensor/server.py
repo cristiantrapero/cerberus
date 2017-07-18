@@ -1,6 +1,5 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
-
 import sys
 import time
 import Ice
@@ -8,7 +7,6 @@ import Ice
 CITISIM_SLICE = '/usr/share/slice/citisim'
 Ice.loadSlice('{}/iot.ice --all'.format(CITISIM_SLICE))
 import SmartObject
-
 
 
 class ObservableI(SmartObject.Observable):
@@ -30,9 +28,7 @@ class ObservableI(SmartObject.Observable):
             'place':      'ITSI ARCO lab'
         }
 
-        metadata = [SmartObject.MeasureMetadata(int(time.time()), 255, 30)]
-        position = [SmartObject.Position(38.997932, -3.919898, 637.10, "studio-door")]
-        self.observer.notify("motion-sensor", metadata, position)
+        self.observer.notify("ITSI ARCO lab", data)
 
 
 class MotionSensor(Ice.Application):

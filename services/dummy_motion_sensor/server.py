@@ -37,7 +37,7 @@ class MotionSensor(Ice.Application):
         servant = ObservableI()
 
         adapter = broker.createObjectAdapter("Adapter")
-        adapter.add(servant, broker.stringToIdentity("actuator"))
+        adapter.add(servant, broker.stringToIdentity("motion_sensor"))
 
         adapter.activate()
         self.shutdownOnInterrupt()

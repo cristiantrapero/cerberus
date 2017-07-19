@@ -26,13 +26,9 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("Adapter")
         proxy = adapter.add(servant, broker.stringToIdentity("actuator"))
 
-        sys.stdout.flush()
-
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
-
-        return 0
 
 
 sys.exit(Server().main(sys.argv))

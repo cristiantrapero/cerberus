@@ -7,6 +7,7 @@ import Ice
 CITISIM_SLICE = '/usr/share/slice/citisim'
 Ice.loadSlice('{}/iot.ice --all'.format(CITISIM_SLICE))
 import SmartObject
+from SmartObject import MetadataField as mkey
 
 
 class ObservableI(SmartObject.Observable):
@@ -18,14 +19,15 @@ class ObservableI(SmartObject.Observable):
         self.observer = SmartObject.EventSinkPrx.checkedCast(ic.stringToProxy(observer))
 
     def detect_motion(self):
+        # FIXME: migrate to libcitisim
         data = {
-            'timestamp':  str(time.time()),
-            'quality':    '255',
-            'expiration': '30',
-            'latitude':   '38.997932',
-            'longitude':  '-3.919898',
-            'altitude':   '637.10',
-            'place':      'ITSI ARCO lab'
+            mkey.Timestamp:  str(time.time()),
+            mkey.Quality:    '255',
+            mkey.Expiration: '30',
+            mkey.Latitude:   '38.997932',
+            mkey.Longitude:  '-3.919898',
+            mkey.Altitude:   '637.10',
+            mkey.Place:      'ITSI ARCO lab'
         }
 
         self.observer.notify("ITSI ARCO lab", data)

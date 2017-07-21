@@ -11,12 +11,13 @@ import SmartObject
 
 class ActuatorI(SmartObject.DigitalSink):
     def notify(self, value, source, data, current=None):
-        if value == True:
+        if value:
             time_diff = time.time() - data.timestamp
             if time_diff < 15:
                 print("Door opened.\n")
         else:
             print("Door closed.\n")
+
 
 class Server(Ice.Application):
     def run(self, argv):

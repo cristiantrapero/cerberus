@@ -4,31 +4,39 @@ import sys
 import time
 import Ice
 
+import libcitisim as citisim
+
 CITISIM_SLICE = '/usr/share/slice/citisim'
 Ice.loadSlice('{}/iot.ice --all'.format(CITISIM_SLICE))
 import SmartObject
 from SmartObject import MetadataField as mkey
 
+Ice.loadSlice('motion_service.ice --all -I {}'.format(CITISIM_SLICE))
+import Private
 
-class ObservableI(SmartObject.Observable):
+
+class ObservableI(Private.MotionService):
     def __init__(self):
         self.observer = None
 
     def setObserver(self, observer, current=None):
         ic = current.adapter.getCommunicator()
-        self.observer = SmartObject.EventSinkPrx.checkedCast(ic.stringToProxy(observer))
+        proxy = ic.stringToProxy(observer)
+        self.observer = SmartObject.EventSinkPrx.checkedCast(proxy)
 
-    def detect_motion(self):
-        # FIXME: migrate to libcitisim
-        data = {
-            mkey.Timestamp:  str(time.time()),
-            mkey.Quality:    '255',
-            mkey.Expiration: '30',
-            mkey.Latitude:   '38.997932',
-            mkey.Longitude:  '-3.919898',
-            mkey.Altitude:   '637.10',
-            mkey.Place:      'ITSI ARCO lab'
-        }
+    def notify(self, args):
+        if not self.observer:
+            print("Observer not set!")
+            return
+
+        data = citisim.MetadataHelper(
+            timestamp = 'now',
+            quality = 255,
+            expiration = 30,
+            latitude = 38.99793,
+            longitude = -3.919898,
+            altitude = 637.10,
+            place = 'ITSI ARCO lab').to_dict()
 
         self.observer.notify("ITSI ARCO lab", data)
 
@@ -38,11 +46,14 @@ class MotionSensor(Ice.Application):
         broker = self.communicator()
         servant = ObservableI()
 
-        adapter = broker.createObjectAdapter("Adapter")
-        adapter.add(servant, broker.stringToIdentity("motion_sensor"))
+        adapter = broker.createObjectAdapterWithEndpoints('Adapter', 'tcp')
+        proxy = adapter.addWithUUID(servant)
 
         adapter.activate()
         self.shutdownOnInterrupt()
+
+        proxy = citisim.remove_private_endpoints(proxy)
+        print("Server ready:\n'{}'".format(proxy))
         broker.waitForShutdown()
 
 

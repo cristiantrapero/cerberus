@@ -24,7 +24,7 @@ class ObservableI(Private.MotionService):
         proxy = ic.stringToProxy(observer)
         self.observer = SmartObject.EventSinkPrx.checkedCast(proxy)
 
-    def notify(self, args):
+    def notify(self, *args):
         if not self.observer:
             print("Observer not set!")
             return

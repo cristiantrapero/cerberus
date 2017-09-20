@@ -11,11 +11,8 @@ Ice.loadSlice('{}/iot.ice --all'.format(CITISIM_SLICE))
 import SmartObject
 from SmartObject import MetadataField as mkey
 
-Ice.loadSlice('motion_service.ice --all -I {}'.format(CITISIM_SLICE))
-import Private
 
-
-class ObservableI(Private.MotionService):
+class ObservableI(SmartObject.Observable):
     def __init__(self):
         self.observer = None
 
@@ -24,7 +21,7 @@ class ObservableI(Private.MotionService):
         proxy = ic.stringToProxy(observer)
         self.observer = SmartObject.EventSinkPrx.checkedCast(proxy)
 
-    def notify(self, *args):
+    def ping(self, current=None):
         if not self.observer:
             print("Observer not set!")
             return

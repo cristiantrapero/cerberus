@@ -1,15 +1,12 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
+
 import sys
-import time
 import Ice
 
 import libcitisim as citisim
-
-CITISIM_SLICE = '/usr/share/slice/citisim'
-Ice.loadSlice('{}/iot.ice --all'.format(CITISIM_SLICE))
-import SmartObject
-from SmartObject import MetadataField as mkey
+from libcitisim import SmartObject
+mkey = SmartObject.MetadataField
 
 
 class ObservableI(SmartObject.Observable):

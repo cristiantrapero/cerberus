@@ -91,6 +91,9 @@
          </icebox>
       </server-template>
       <node name="node1">
+         <server id="ClipService" activation="manual" exe="python3" pwd="./services/dummy_clip_service">
+            <option>server.py</option>
+         </server>
          <server id="MotionSensor" activation="manual" exe="python3" pwd="./services/dummy_motion_sensor">
             <option>server.py</option>
             <properties>

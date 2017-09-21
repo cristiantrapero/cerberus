@@ -101,6 +101,15 @@
                <property name="Ice.StdOut" value="/tmp/dummry_motion_sensor.out"/>
             </properties>
          </server>
+         <server id="SnapshotService" activation="manual" exe="python3" pwd="./services/dummy_snapshot_service">
+            <option>server.py</option>
+            <properties>
+               <property name="Ice.StdErr" value="/tmp/dummy_snapshot_service.err"/>
+            </properties>
+         </server>
+         <server id="SpeechToText" activation="manual" exe="python3" pwd="./services/dummy_speech_to_text">
+            <option>server.py</option>
+         </server>
       </node>
    </application>
 </icegrid>

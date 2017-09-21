@@ -1,23 +1,23 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
+
 import sys
 import time
 import logging
 import cv2
 import Ice
 
-CITISIM_SLICE = '/usr/share/slice/citisim'
-Ice.loadSlice('{}/services.ice --all'.format(CITISIM_SLICE))
-import SmartObject
 
-class SnapshotServiceI(SmartObject.SnapshotService):
+import libcitisim as citisim
+from libcitisim import SmartObject
+
+
+class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
+    observer_cast = SmartObject.DataSinkPrx
+
     def __init__(self):
-        self.observer = None
         self.metadata = None
-
-    def setObserver(self, observer, current):
-        ic = current.adapter.getCommunicator()
-        self.observer = SmartObject.DataSinkPrx.checkedCast(ic.stringToProxy(observer))
+        super().__init__()
 
     def notify(self, source, data, current=None):
         self.metadata = data
@@ -45,11 +45,14 @@ class Server(Ice.Application):
         broker = self.communicator()
         servant = SnapshotServiceI()
 
-        adapter = broker.createObjectAdapter("Adapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("snapshot_service"))
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        proxy = adapter.addWithUUID(servant)
 
         adapter.activate()
         self.shutdownOnInterrupt()
+
+        proxy = citisim.remove_private_endpoints(proxy)
+        print("Server ready:\n'{}'".format(proxy))
         broker.waitForShutdown()
 
 

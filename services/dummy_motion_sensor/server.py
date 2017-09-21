@@ -9,14 +9,8 @@ from libcitisim import SmartObject
 mkey = SmartObject.MetadataField
 
 
-class ObservableI(SmartObject.Observable):
-    def __init__(self):
-        self.observer = None
-
-    def setObserver(self, observer, current=None):
-        ic = current.adapter.getCommunicator()
-        proxy = ic.stringToProxy(observer)
-        self.observer = SmartObject.EventSinkPrx.checkedCast(proxy)
+class ObservableI(citisim.ObservableMixin, SmartObject.Observable):
+    observer_cast = SmartObject.EventSinkPrx
 
     def ping(self, current=None):
         if not self.observer:

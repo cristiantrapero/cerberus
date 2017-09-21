@@ -1,29 +1,24 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
+
 import sys
 import Ice
+import logging
 
-CITISIM_SLICE = '/usr/share/slice/citisim'
-Ice.loadSlice('{}/services.ice --all'.format(CITISIM_SLICE))
-import SmartObject
+import libcitisim as citisim
+from libcitisim import SmartObject
 
-class SpeechToTextI(SmartObject.SpeechToText):
-    def __init__(self):
-        self.observer = None
-        self.metadata = None
 
-    def setObserver(self, observer, current=None):
-        ic = current.adapter.getCommunicator()
-        self.observer = SmartObject.AuthenticatedCommandServicePrx.checkedCast(ic.stringToProxy(observer))
+class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
+    observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
-    def trigger(self, meta, data, current=None):
+    def trigger(self, data, meta, current=None):
         if not self.observer:
             logging.error("observer not set")
             return
 
-        self.metadata = meta
         command = "abrir puerta"
-        self.observer.notifyCommand(self.metadata, command)
+        self.observer.notifyCommand(command, meta)
 
 
 class Server(Ice.Application):
@@ -31,11 +26,14 @@ class Server(Ice.Application):
         broker = self.communicator()
         servant = SpeechToTextI()
 
-        adapter = broker.createObjectAdapter("Adapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("speech_to_text"))
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        proxy = adapter.addWithUUID(servant)
 
         adapter.activate()
         self.shutdownOnInterrupt()
+
+        proxy = citisim.remove_private_endpoints(proxy)
+        print("Server ready:\n'{}'".format(proxy))
         broker.waitForShutdown()
 
 

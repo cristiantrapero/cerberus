@@ -1,24 +1,21 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 import sys
-import time
 import logging
 import scipy.io.wavfile
 import numpy as np
 import Ice
 
-CITISIM_SLICE = '/usr/share/slice/citisim'
-Ice.loadSlice('{}/services.ice --all'.format(CITISIM_SLICE))
-import SmartObject
+import libcitisim as citisim
+from libcitisim import SmartObject
 
-class ClipServiceI(SmartObject.ClipService):
+
+class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
+    observer_cast = SmartObject.DataSinkPrx
+
     def __init__(self):
-        self.observer = None
         self.metadata = None
-
-    def setObserver(self, observer, current=None):
-        ic = current.adapter.getCommunicator()
-        self.observer = SmartObject.DataSinkPrx.checkedCast(ic.stringToProxy(observer))
+        super().__init__()
 
     def notify(self, source, data, current=None):
         self.metadata = data
@@ -31,12 +28,11 @@ class ClipServiceI(SmartObject.ClipService):
             logging.error("observer not set")
             return
 
-        record = self.captureAudio(duration_seconds)
+        record = self.capture_audio(duration_seconds)
+        self.observer.trigger(record, 'put-sender-identity-here', self.metadata)
 
-        self.observer.trigger(self.metadata, record)
-
-    def captureAudio(self, duration_seconds, current=None):
-        rate, samples = scipy.io.wavfile.read('./commandVoice.wav')
+    def capture_audio(self, duration_seconds):
+        rate, samples = scipy.io.wavfile.read('./voice-command.wav')
         audio = np.asarray(samples, dtype=np.int16)
         return audio
 
@@ -46,11 +42,14 @@ class Server(Ice.Application):
         broker = self.communicator()
         servant = ClipServiceI()
 
-        adapter = broker.createObjectAdapter("Adapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("clip_service"))
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        proxy = adapter.addWithUUID(servant)
 
         adapter.activate()
         self.shutdownOnInterrupt()
+
+        proxy = citisim.remove_private_endpoints(proxy)
+        print("Server ready:\n'{}'".format(proxy))
         broker.waitForShutdown()
 
 

@@ -17,7 +17,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
             logging.error("observer not set")
             return
 
-        command = "abrir puerta"
+        command = "abreme la puerta"
         self.observer.notifyCommand(command, meta)
 
 

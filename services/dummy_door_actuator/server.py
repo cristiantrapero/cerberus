@@ -4,16 +4,15 @@ import sys
 import time
 import Ice
 
-CITISIM_SLICE = '/usr/share/slice/citisim'
-Ice.loadSlice('{}/services.ice --all'.format(CITISIM_SLICE))
-import SmartObject
+import libcitisim as citisim
+from libcitisim import SmartObject
 
 
 class ActuatorI(SmartObject.DigitalSink):
     def notify(self, value, source, data, current=None):
         if value:
             time_diff = time.time() - data.timestamp
-            if time_diff < 15:
+            if time_diff < Ice.getPropierty(DoorActuator.TimeToLive):
                 print("Door opened.\n")
         else:
             print("Door closed.\n")
@@ -24,11 +23,14 @@ class Server(Ice.Application):
         broker = self.communicator()
         servant = ActuatorI()
 
-        adapter = broker.createObjectAdapter("Adapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("actuator"))
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        proxy = adapter.addWithUUID(servant)
 
         adapter.activate()
         self.shutdownOnInterrupt()
+
+        proxy = citisim.remove_private_endpoints(proxy)
+        print("Server ready:\n'{}'".format(proxy))
         broker.waitForShutdown()
 
 

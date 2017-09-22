@@ -1,64 +1,53 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 import sys
 import Ice
 
-CITISIM_SLICE = '/usr/share/slice/citisim'
-Ice.loadSlice('{}/services.ice --all'.format(CITISIM_SLICE))
-import SmartObject
+import libcitisim as citisim
+from libcitisim import SmartObject
+mkey = SmartObject.MetadataField
 
-class AuthenticatorI(SmartObject.AuthenticatedCommandService):
+class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
+    observer_cast = SmartObject.EventSinkPrx
+
     def __init__(self):
-        self.observer = None
-        self.metadata = None
-        self.personID = None
+        self.metadata_person = None
+        self.metadata_command = None
+        self.id_person = None
         self.command = None
-        self.personAuthorized = ['MariaJose', 'David', 'Cristian','SteveCarell']
-        self.commandAuthorized = ['abrir puerta', 'abrir', 'abreme', 'abrir la puerta', 'abreme la puerta', 'abre la puerta', 'abre']
+        self.person_authorized = ['MariaJose', 'David', 'Cristian', 'SteveCarell']
+        self.command_authorized = ['abrir puerta', 'abrir', 'abreme', 'abrir la puerta', 'abreme la puerta', 'abre la puerta', 'abre']
+        super().__init__()
 
-    def setObserver(self, observer, current=None):
-        ic = current.adapter.getCommunicator()
-        self.observer = SmartObject.DigitalSinkPrx.checkedCast(ic.stringToProxy(observer))
-
-    def notifyPerson(self, meta, personID, current=None):
-        self.metadata = meta
-        self.personID = personID
-
-        authorizedPerson = self.findPersonInDB()
-        if authorizedPerson == True:
-            if self.command is not None:
-                self.openDoor()
+    def notifyPerson(self, meta, id_person, current=None):
+        self.metadata_person = meta
+        self.id_person = id_person
+        self.checkAuthorization()
 
     def notifyCommand(self, meta, command, current=None):
+        self.metadata_command = meta
         self.command = command
+        self.checkAuthorization()
 
-        authorizedPerson = self.findPersonInDB()
-        if authorizedPerson == True:
-            if self.personID is not None:
-                self.openDoor()
-
-    def findPersonInDB(self, current=None):
-        if self.personID in self.personAuthorized:
-            return True
-        else:
-            return False
-
-    def openDoor(self, current=None):
-        if any(x in self.command for x in self.commandAuthorized):
-            self.observer.notify(True, self.metadata.source, self.metadata)
-        else:
-            self.observer.notify(False, self.metadata.source, self.metadata)
+    def checkAuthorization(self, current=None):
+        if self.id_person in self.person_authorized:
+            if any(x in self.command for x in self.command_authorized):
+                if self.metadata_person.source == self.metadata_command.source:
+                    self.observer.notify(True, self.metadata_command.source, self.metadata_command)
 
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
         servant = AuthenticatorI()
 
-        adapter = broker.createObjectAdapter("Adapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("authenticator"))
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        proxy = adapter.addWithUUID(servant)
 
         adapter.activate()
         self.shutdownOnInterrupt()
+
+        proxy = citisim.remove_private_endpoints(proxy)
+        print("Server ready:\n'{}'".format(proxy))
         broker.waitForShutdown()
 
 

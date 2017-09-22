@@ -10,7 +10,7 @@ import libcitisim as citisim
 from libcitisim import SmartObject
 
 
-class PersonRecognizerI(SmartObject.PersonRecognizer):
+class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
     def __init__(self):

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import logging
 import Ice
 
 import libcitisim as citisim
@@ -14,7 +15,7 @@ class ObservableI(citisim.ObservableMixin, SmartObject.Observable):
 
     def ping(self, current=None):
         if not self.observer:
-            print("Observer not set!")
+            logging.error("observer not set")
             return
 
         data = citisim.MetadataHelper(

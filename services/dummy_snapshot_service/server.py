@@ -7,7 +7,6 @@ import logging
 import cv2
 import Ice
 
-
 import libcitisim as citisim
 from libcitisim import SmartObject
 
@@ -23,7 +22,8 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
         self.metadata = data
 
         # Take 1 picture every 0 seconds
-        self.trigger(1, 0)
+        self.trigger(Ice.getProperty(SnapshotService.NumSnapshots),
+            Ice.getProperty(SnapshotService.TimeToShot))
 
     def trigger(self, count, delta_seconds, current=None):
         if not self.observer:

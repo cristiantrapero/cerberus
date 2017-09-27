@@ -15,7 +15,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 
     def __init__(self):
         self.metadata = None
-        super().__init__()
+        super(self.__class__, self).__init__()
 
     def trigger(self, meta, data, current=None):
         if not self.observer:

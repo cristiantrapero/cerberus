@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/python2 -u
 # -*- coding: utf-8 -*-
 
 import sys
@@ -16,7 +16,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
     def __init__(self):
         self.metadata = None
-        super().__init__()
+        super(self.__class__, self).__init__()
 
     def notify(self, source, data, current=None):
         self.metadata = data

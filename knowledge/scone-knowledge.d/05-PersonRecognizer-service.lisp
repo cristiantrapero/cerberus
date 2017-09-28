@@ -42,8 +42,8 @@
 	       :c {AuthenticatedCommandService.notifyPerson})
 
 ;; Esto es temporal para testear el cliente
-(new-indv {person-recognizer -t -e 1.1:tcp -h localhost -p 9002 -t 60000} {proxy})
-(x-is-the-y-of-z {person-recognizer -t -e 1.1:tcp -h localhost -p 9002 -t 60000} {service-proxy} {PersonRecognizer-service-instance})
+(new-indv {person-recognizer} {proxy})
+(x-is-the-y-of-z {person-recognizer} {service-proxy} {PersonRecognizer-service-instance})
 
 
 ;; CL-USER> (list-causes {person recognition})

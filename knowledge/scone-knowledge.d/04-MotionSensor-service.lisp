@@ -27,5 +27,5 @@
 	       :c {EventSink.notify})
 
 ;; Esto es temporal para testear el cliente
-(new-indv {motion_sensor -t -e 1.1:tcp -h localhost -p 9000 -t 60000} {proxy})
-(x-is-the-y-of-z {motion_sensor -t -e 1.1:tcp -h localhost -p 9000 -t 60000} {service-proxy} {MotionSensor-service-instance})
+(new-indv {motion-sensor} {proxy})
+(x-is-the-y-of-z {motion-sensor} {service-proxy} {MotionSensor-service-instance})

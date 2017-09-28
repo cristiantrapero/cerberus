@@ -45,5 +45,5 @@
 	       :c {DigitalSink.notify})
 
 ;; Esto es temporal para testear el cliente
-(new-indv {authenticator -t -e 1.1:tcp -h localhost -p 9005 -t 60000} {proxy})
-(x-is-the-y-of-z {authenticator -t -e 1.1:tcp -h localhost -p 9005 -t 60000} {service-proxy} {Authenticator-service-instance})
+(new-indv {authenticator} {proxy})
+(x-is-the-y-of-z {authenticator} {service-proxy} {Authenticator-service-instance})

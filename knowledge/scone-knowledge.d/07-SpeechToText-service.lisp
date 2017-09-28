@@ -37,8 +37,8 @@
 	       :c {AuthenticatedCommandService.notifyCommand})
 
 ;; Esto es temporal para testear el cliente
-(new-indv {speech_to_text -t -e 1.1:tcp -h localhost -p 9004 -t 60000} {proxy})
-(x-is-the-y-of-z {speech_to_text -t -e 1.1:tcp -h localhost -p 9004 -t 60000} {service-proxy} {SpeechToText-service-instance})
+(new-indv {speech-to-text } {proxy})
+(x-is-the-y-of-z {speech-to-text} {service-proxy} {SpeechToText-service-instance})
 
 
 ;; CL-USER> (list-causes {person recognition})

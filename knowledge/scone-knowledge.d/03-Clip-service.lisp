@@ -39,5 +39,5 @@
 	       :c {ClipService.trigger})
 
 ;; Esto es temporal para testear el cliente
-(new-indv {clip-service -t -e 1.1:tcp -h localhost -p 9093 -t 60000} {proxy})
-(x-is-the-y-of-z {clip-service -t -e 1.1:tcp -h localhost -p 9093 -t 60000} {service-proxy} {ClipService-service-instance})
+(new-indv {clip-service} {proxy})
+(x-is-the-y-of-z {clip-service} {service-proxy} {ClipService-service-instance})

@@ -97,6 +97,9 @@
                <property name="Ice.StdErr" value="/tmp/dummy_authenticator.err"/>
                <property name="Ice.StdOut" value="/tmp/dummy_authenticator.out"/>
             </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="authenticator"/>
+            </adapter>
          </server>
          <server id="ClipService" activation="manual" exe="python3" pwd="./services/dummy_clip_service">
             <option>server.py</option>
@@ -104,6 +107,9 @@
                <property name="Ice.StdErr" value="/tmp/dummy_clip_service.err"/>
                <property name="Ice.StdOut" value="/tmp/dummy_clip_service.out"/>
             </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="clip-service"/>
+            </adapter>
          </server>
          <server id="DoorActuator" activation="manual" exe="python3" pwd="./services/dummy_door_actuator">
             <option>server.py</option>
@@ -111,6 +117,9 @@
                <property name="Ice.StdErr" value="/tmp/dummy_door_actuator.err"/>
                <property name="Ice.StdOut" value="/tmp/dummy_door_actuator.out"/>
             </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="door-actuator"/>
+            </adapter>
          </server>
          <server id="MotionSensor" activation="manual" exe="python3" pwd="./services/dummy_motion_sensor">
             <option>server.py</option>
@@ -118,6 +127,9 @@
                <property name="Ice.StdErr" value="/tmp/dummry_motion_sensor.err"/>
                <property name="Ice.StdOut" value="/tmp/dummry_motion_sensor.out"/>
             </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="motion-sensor"/>
+            </adapter>
          </server>
          <server id="PersonRecognizer" activation="manual" exe="python" pwd="./services/dummy_person_recognizer">
             <option>server.py</option>
@@ -125,6 +137,18 @@
                <property name="Ice.StdErr" value="/tmp/dummry_person_recognizer.err"/>
                <property name="Ice.StdOut" value="/tmp/dummry_person_recognizer.out"/>
             </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="person-recognizer"/>
+            </adapter>
+         </server>
+         <server id="SconeServer" activation="manual" exe="scone-server" pwd="./knowledge/">
+            <properties>
+               <property name="Ice.StdErr" value="/tmp/scone_server.err"/>
+               <property name="Ice.StdOut" value="/tmp/scone_server.out"/>
+            </properties>
+            <adapter name="SconeAdapter" endpoints="default" id="${server}.SconeAdapter">
+               <object identity="scone-server"/>
+            </adapter>
          </server>
          <server id="SnapshotService" activation="manual" exe="python" pwd="./services/dummy_snapshot_service">
             <option>server.py</option>
@@ -132,6 +156,9 @@
                <property name="Ice.StdErr" value="/tmp/dummy_snapshot_service.err"/>
                <property name="Ice.StdOut" value="/tmp/dummy_snapshot_service.out"/>
             </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="snapshot-service"/>
+            </adapter>
          </server>
          <server id="SpeechToText" activation="manual" exe="python3" pwd="./services/dummy_speech_to_text">
             <option>server.py</option>
@@ -139,6 +166,9 @@
                <property name="Ice.StdErr" value="/tmp/dummy_speech_to_text.err"/>
                <property name="Ice.StdOut" value="/tmp/dummy_speech_to_text.out"/>
             </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="speech-to-text"/>
+            </adapter>
          </server>
       </node>
    </application>

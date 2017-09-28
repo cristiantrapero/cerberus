@@ -47,5 +47,5 @@
 	       :c {DataSink.trigger})
 
 ;; Esto es temporal para testear el cliente
-(new-indv {snapshot_service -t -e 1.1:tcp -h localhost -p 9001 -t 60000} {proxy})
-(x-is-the-y-of-z {snapshot_service -t -e 1.1:tcp -h localhost -p 9001 -t 60000} {service-proxy} {SnapshotService-service-instance})
+(new-indv {snapshot-service} {proxy})
+(x-is-the-y-of-z {snapshot-service} {service-proxy} {SnapshotService-service-instance})

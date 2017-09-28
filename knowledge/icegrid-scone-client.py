@@ -109,7 +109,8 @@ class Client(Ice.Application):
 
         ic = self.communicator()
         observable = ic.stringToProxy(observable)
-        observable = SmartObject.ObservablePrx.checkedCast(observable)
+        #FIXME
+        observable = SmartObject.ObservablePrx.uncheckedCast(observable)
         observable.setObserver(observer)
 
 

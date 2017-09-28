@@ -1,0 +1,4 @@
+(
+ :test-person-recognizer-service
+ :test-clip-service
+)

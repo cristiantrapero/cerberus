@@ -22,8 +22,8 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
         self.metadata = data
 
         # Take 1 picture every 0 seconds
-        self.trigger(Ice.getProperty(SnapshotService.NumSnapshots),
-            Ice.getProperty(SnapshotService.TimeToShot))
+        self.trigger(Ice.getProperty('SnapshotService.NumSnapshots'),
+                     Ice.getProperty('SnapshotService.TimeToShot'))
 
     def trigger(self, count, delta_seconds, current=None):
         if not self.observer:

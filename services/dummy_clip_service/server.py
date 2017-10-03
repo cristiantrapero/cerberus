@@ -21,7 +21,7 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         self.metadata = data
 
         # Capture sound for 10 seconds
-        self.trigger(Ice.getProperty(ClipService.TimeToRecord))
+        self.trigger(Ice.getProperty('ClipService.TimeToRecord'))
 
     def trigger(self, duration_seconds, current=None):
         if not self.observer:

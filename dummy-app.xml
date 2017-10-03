@@ -94,8 +94,8 @@
          <server id="AuthenticatedCommandService" activation="manual" exe="python3" pwd="./services/dummy_authenticator">
             <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/dummy_authenticator.err"/>
                <property name="Ice.StdOut" value="/tmp/dummy_authenticator.out"/>
+               <property name="Ice.StdErr" value="/tmp/dummy_authenticator.err"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="authenticator"/>
@@ -124,8 +124,8 @@
          <server id="MotionSensor" activation="manual" exe="python3" pwd="./services/dummy_motion_sensor">
             <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/dummry_motion_sensor.err"/>
-               <property name="Ice.StdOut" value="/tmp/dummry_motion_sensor.out"/>
+               <property name="Ice.StdErr" value="/tmp/dummy_motion_sensor.err"/>
+               <property name="Ice.StdOut" value="/tmp/dummy_motion_sensor.out"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="motion-sensor"/>
@@ -134,20 +134,20 @@
          <server id="PersonRecognizer" activation="manual" exe="python" pwd="./services/dummy_person_recognizer">
             <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/dummry_person_recognizer.err"/>
-               <property name="Ice.StdOut" value="/tmp/dummry_person_recognizer.out"/>
+               <property name="Ice.StdErr" value="/tmp/dummy_person_recognizer.err"/>
+               <property name="Ice.StdOut" value="/tmp/dummy_person_recognizer.out"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="person-recognizer"/>
             </adapter>
          </server>
-         <server id="SconeServer" activation="manual" exe="scone-server" pwd="./knowledge/">
+         <server id="SconeWrapper" activation="manual" exe="scone-wrapper">
             <properties>
-               <property name="Ice.StdErr" value="/tmp/scone_server.err"/>
-               <property name="Ice.StdOut" value="/tmp/scone_server.out"/>
+               <property name="Ice.StdOut" value="/tmp/scone-wrapper.out"/>
+               <property name="Ice.StdErr" value="/tmp/scone-wrapper.err"/>
             </properties>
-            <adapter name="SconeAdapter" endpoints="default" id="${server}.SconeAdapter">
-               <object identity="scone-server"/>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="scone"/>
             </adapter>
          </server>
          <server id="SnapshotService" activation="manual" exe="python" pwd="./services/dummy_snapshot_service">

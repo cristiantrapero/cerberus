@@ -24,7 +24,7 @@ class Server(Ice.Application):
         servant = ActuatorI()
 
         adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        proxy = adapter.addWithUUID(servant)
+        proxy = adapter.add(servant, broker.stringToIdentity("doot-actuator"))
 
         adapter.activate()
         self.shutdownOnInterrupt()

@@ -27,7 +27,7 @@ class Server(Ice.Application):
         servant = SpeechToTextI()
 
         adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        proxy = adapter.addWithUUID(servant)
+        proxy = adapter.add(servant, broker.stringToIdentity("speech-to-text"))
 
         adapter.activate()
         self.shutdownOnInterrupt()

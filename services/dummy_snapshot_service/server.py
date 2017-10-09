@@ -46,7 +46,7 @@ class Server(Ice.Application):
         servant = SnapshotServiceI()
 
         adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        proxy = adapter.addWithUUID(servant)
+        proxy = adapter.add(servant, broker.stringToIdentity("snapshot-service"))
 
         adapter.activate()
         self.shutdownOnInterrupt()

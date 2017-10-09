@@ -43,7 +43,7 @@ class Server(Ice.Application):
         servant = ClipServiceI()
 
         adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        proxy = adapter.addWithUUID(servant)
+        proxy = adapter.add(servant, broker.stringToIdentity("clip-service"))
 
         adapter.activate()
         self.shutdownOnInterrupt()

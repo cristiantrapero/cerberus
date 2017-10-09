@@ -43,7 +43,7 @@ class Server(Ice.Application):
         servant = PersonRecognizerI()
 
         adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        proxy = adapter.addWithUUID(servant)
+        proxy = adapter.add(servant, broker.stringToIdentity("person-recognizer"))
 
         adapter.activate()
         self.shutdownOnInterrupt()

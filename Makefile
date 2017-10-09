@@ -20,6 +20,12 @@ stop-grid:
 show-nodes:
 	$(IG_ADMIN) -e "node list"
 
+run-scheduler:
+	./scheduler.py --Ice.Config=locator.config scone
+
+run-client:
+	./client.py --Ice.Config=locator.config
+
 /tmp/db/%:
 	mkdir -p $@
 

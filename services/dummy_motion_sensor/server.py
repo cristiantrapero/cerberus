@@ -36,7 +36,7 @@ class MotionSensor(Ice.Application):
         servant = ObservableI()
 
         adapter = broker.createObjectAdapterWithEndpoints('Adapter', 'tcp')
-        proxy = adapter.addWithUUID(servant)
+        proxy = adapter.add(servant, broker.stringToIdentity("motion-sensor"))
 
         adapter.activate()
         self.shutdownOnInterrupt()

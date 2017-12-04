@@ -11,16 +11,13 @@ mkey = SmartObject.MetadataField
 
 class Cliente(Ice.Application):
     def run(self, argv):
-        proxy = self.communicator().stringToProxy("motion-sensor")
-        motion = SmartObject.ObservablePrx.uncheckedCast(proxy)
+        motion = self.communicator().stringToProxy("motion-sensor")
 
         if not motion:
             raise RuntimeError('Invalid proxy')
 
-        print("Proxy: {} ".format(motion))
-
         motion.ice_ping()
-
+        print("ice_ping to: {}".format(motion))
         return 0
 
 

@@ -5,8 +5,8 @@ NODES=$(basename $(shell ls node*.config | sort -r))
 NODE_DIRS=$(addprefix /tmp/db/, $(NODES))
 IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
 
-start-grid: /tmp/db/registry $(NODE_DIRS)
-	icegridnode --Ice.Config=node1.config &
+start-grid: /tmp/db/registry /tmp/db/is.db $(NODE_DIRS)
+	icegridnode --Ice.Config=node1.config & 
 	@echo -- ok
 
 stop-grid:
@@ -21,14 +21,16 @@ show-nodes:
 	$(IG_ADMIN) -e "node list"
 
 run-scheduler:
-	./scheduler.py --Ice.Config=locator.config scone
+	./scheduler.py --Ice.Config=locator.config scone wiring-service
 
-run-client:
-	./client.py --Ice.Config=locator.config
+simulate-motion:
+	./simulate-motion.py --Ice.Config=locator.config
 
 /tmp/db/%:
 	mkdir -p $@
 
-clean: stop-grid
+clean:
 	-$(RM) *~
+	-$(RM) -r .scone
 	-$(RM) -r /tmp/db
+	-$(RM) -r /tmp/is.db

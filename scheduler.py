@@ -5,16 +5,16 @@ import sys
 import Ice
 
 Ice.loadSlice('-I {0} {0}/dharma/scone-wrapper.ice --all'.format('/usr/share/slice'))
-CITISIM_SLICE = '/usr/share/slice/citisim'
-Ice.loadSlice('{}/services.ice --all'.format(CITISIM_SLICE))
 import Semantic  # noqa
-import SmartObject  # noqa
+Ice.loadSlice('-I {0} {0}/citisim/wiring.ice --all'.format('/usr/share/slice'))
+import SmartObject
 
 
 class Client(Ice.Application):
     def run(self, args):
         self.scone = self.get_scone(args[1])
-        self.compose("command execution by authorised person")
+        self.wiring_service = self.get_wiring_service(args[2])
+        self.compose("open door")
         print("Done.")
 
     def compose(self, event):
@@ -27,6 +27,13 @@ class Client(Ice.Application):
         if not sconePrx:
             raise RuntimeError('Invalid proxy')
         return sconePrx
+
+    def get_wiring_service(self, proxy):
+        proxy = self.communicator().stringToProxy(proxy)
+        wiringPrx = SmartObject.WiringServicePrx.uncheckedCast(proxy)
+        if not wiringPrx:
+            raise RuntimeError('Invalid proxy')
+        return wiringPrx
 
     def make_schedule(self, event):
         services = []
@@ -105,7 +112,9 @@ class Client(Ice.Application):
     def connect(self, observable, observer):
         a = observable.split()[0]
         b = observer.split()[0]
-        print("connect '{}' -> '{}'".format(a, b))
+        print("connect '{}' -> '{}'".format(observable, observer))
+
+        # self.wiring_service.addObserver(observable, observer)
 
         ic = self.communicator()
         observable = ic.stringToProxy(observable)

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
-   <application name="Prototipo del Sistema de Control de Acceso">
-      <description>Los servidores simulan el comportamiento real de los servicios.</description>
+   <application name="Access Control System">
       <service-template id="IceStorm">
          <parameter name="instance-name" default="${application}.IceStorm"/>
          <parameter name="topic-manager-endpoints" default="default"/>
@@ -92,7 +91,7 @@
          </icebox>
       </server-template>
       <node name="node1">
-         <server id="AuthenticatedCommandService" activation="manual" exe="python3" pwd="./services/dummy_authenticator">
+         <server id="AuthenticatedCommandService" activation="manual" exe="python3" pwd="./services/authenticator">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdOut" value="/tmp/authenticator.out"/>
@@ -102,7 +101,7 @@
                <object identity="authenticator"/>
             </adapter>
          </server>
-         <server id="ClipService" activation="manual" exe="python3" pwd="./services/dummy_clip_service">
+         <server id="ClipService" activation="manual" exe="python3" pwd="./services/clip_service">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/clip_service.err"/>
@@ -113,7 +112,7 @@
                <object identity="clip-service"/>
             </adapter>
          </server>
-         <server id="DoorActuator" activation="manual" exe="python3" pwd="./services/dummy_door_actuator">
+         <server id="DoorActuator" activation="manual" exe="python3" pwd="./services/door_actuator">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/door_actuator.err"/>
@@ -142,17 +141,19 @@
                </adapter>
             </service>
          </icebox>
-         <server id="MotionSensor" activation="manual" exe="python3" pwd="./services/dummy_motion_sensor">
+         <server id="MotionSensor" activation="manual" exe="python3" pwd="./services/motion_sensor">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/motion_sensor.err"/>
                <property name="Ice.StdOut" value="/tmp/motion_sensor.out"/>
+               <property name="MotionSensor.MonitoredDirectory" value="/home/"/>
+               <property name="MotionSensor.Place" value="ITSI"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="motion-sensor"/>
             </adapter>
          </server>
-         <server id="PersonRecognizer" activation="manual" exe="python" pwd="./services/dummy_person_recognizer">
+         <server id="PersonRecognizer" activation="manual" exe="python" pwd="./services/person_recognizer">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/person_recognizer.err"/>
@@ -181,23 +182,28 @@
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SnapshotService" activation="manual" exe="python" pwd="./services/dummy_snapshot_service">
+         <server id="SnapshotService" activation="manual" exe="python" pwd="./services/snapshot_service">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/snapshot_service.err"/>
                <property name="Ice.StdOut" value="/tmp/snapshot_service.out"/>
                <property name="SnapshotService.Snapshots" value="1"/>
                <property name="SnapshotService.Delay" value="0"/>
+               <property name="SnapshotService.CameraIP" value="192.168.1.2"/>
+               <property name="SnapshotService.CameraUser" value="admin"/>
+               <property name="SnapshotService.CameraPass" value="admin"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="snapshot-service"/>
             </adapter>
          </server>
-         <server id="SpeechToText" activation="manual" exe="python3" pwd="./services/dummy_speech_to_text">
+         <server id="SpeechToText" activation="manual" exe="python3" pwd="./services/speech_to_text">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/speech_to_text.err"/>
                <property name="Ice.StdOut" value="/tmp/speech_to_text.out"/>
+               <property name="SpeechToText.IBMusername" value="ef4417e7-cb37-4898-a457-2a8d9f255d89"/>
+               <property name="SpeechToText.IBMpassword" value="ETRMgWLYmtKj"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="speech-to-text"/>

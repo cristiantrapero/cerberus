@@ -21,7 +21,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
             return
 
         self.metadata = metadata
-        command = speechToText(data)
+        command = self.speechToText(data)
         self.observer.begin_notifyCommand(command, self.metadata)
 
     def speechToText(self, audio):

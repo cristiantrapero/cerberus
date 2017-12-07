@@ -98,11 +98,11 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
         proxy = adapter.add(servant, broker.stringToIdentity("person-recognizer"))
 
-        adapter.activate()
-        self.shutdownOnInterrupt()
-
         proxy = citisim.remove_private_endpoints(proxy)
         print("Server ready:\n'{}'".format(proxy))
+        
+        adapter.activate()
+        self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
 

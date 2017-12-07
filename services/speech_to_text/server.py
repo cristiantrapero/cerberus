@@ -16,20 +16,25 @@ from libcitisim import SmartObject
 class SpeechToTextI(SmartObject.SpeechToText):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
-    def trigger(self, data, meta, current=None):
+    def __init__(self, properties):
+        self.metadata = None
+        self.properties = properties
+        super(self.__class__, self).__init__()
+
+    def notify(self, data, source, metadata, current=None):
         if not self.observer:
             logging.error("observer not set")
             return
 
-        self.metadata = meta
+        self.metadata = metadata
         command = self.speechToText(data)
         self.observer.notifyCommand(str(command), self.metadata)
 
     def speechToText(self, data):
         # Credentials IBM service
         speech_to_text = SpeechToTextV1(
-            username = 'ef4417e7-cb37-4898-a457-2a8d9f255d89',
-            password = 'ETRMgWLYmtKj',
+            username = str(self.properties.getProperty("SpeechToText.IBMusername")),
+            password = str(self.properties.getProperty("SpeechToText.IBMpassword")),
             x_watson_learning_opt_out = False
         )
 
@@ -41,8 +46,7 @@ class SpeechToTextI(SmartObject.SpeechToText):
         # Write the audio data to send after
         scipy.io.wavfile.write('./commands/command.wav', 44100, audio)
 
-        with open(join(dirname(__file__), './commands/command.wav'),
-                  'rb') as audio_file:
+        with open(join(dirname(__file__), './commands/command.wav'),'rb') as audio_file:
             response = json.dumps(speech_to_text.recognize(
                 audio_file, model='es-ES_BroadbandModel',content_type='audio/wav',
                 word_confidence=True),
@@ -66,16 +70,17 @@ class SpeechToTextI(SmartObject.SpeechToText):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
-        servant = SpeechToTextI()
+        properties = broker.getProperties()
+        servant = SpeechToTextI(properties)
 
         adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
         proxy = adapter.add(servant, broker.stringToIdentity("speech-to-text"))
 
-        adapter.activate()
-        self.shutdownOnInterrupt()
-
         proxy = citisim.remove_private_endpoints(proxy)
         print("Server ready:\n'{}'".format(proxy))
+
+        adapter.activate()
+        self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
 

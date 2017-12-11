@@ -21,16 +21,16 @@ show-nodes:
 	$(IG_ADMIN) -e "node list"
 
 run-scheduler:
-	./scheduler.py --Ice.Config=locator.config scone wiring-service
+	../services/scheduler/scheduler.py --Ice.Config=locator.config scone wiring-service
 
 simulate-motion:
-	./simulate-motion.py --Ice.Config=locator.config
+	../services/simulate_motion/simulate-motion.py --Ice.Config=locator.config
 
 /tmp/db/%:
 	mkdir -p $@
 
 clean:
 	-$(RM) *~
-	-$(RM) -r .scone
+	-$(RM) -r ../.scone
 	-$(RM) -r /tmp/db
 	-$(RM) -r /tmp/is.db

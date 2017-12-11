@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
-   <application name="Prototipo del Sistema de Control de Acceso">
-      <description>Los servidores simulan el comportamiento real de los servicios.</description>
+   <application name="Access Control System Prototipe">
       <service-template id="IceStorm">
          <parameter name="instance-name" default="${application}.IceStorm"/>
          <parameter name="topic-manager-endpoints" default="default"/>
@@ -92,7 +91,7 @@
          </icebox>
       </server-template>
       <node name="node1">
-         <server id="AuthenticatedCommandService" activation="manual" exe="python3" pwd="./services/dummy_authenticator">
+         <server id="AuthenticatedCommandService" activation="manual" exe="python3" pwd="../services/dummy_authenticator">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdOut" value="/tmp/authenticator.out"/>
@@ -102,7 +101,7 @@
                <object identity="authenticator"/>
             </adapter>
          </server>
-         <server id="ClipService" activation="manual" exe="python3" pwd="./services/dummy_clip_service">
+         <server id="ClipService" activation="manual" exe="python3" pwd="../services/dummy_clip_service">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/clip_service.err"/>
@@ -113,7 +112,7 @@
                <object identity="clip-service"/>
             </adapter>
          </server>
-         <server id="DoorActuator" activation="manual" exe="python3" pwd="./services/dummy_door_actuator">
+         <server id="DoorActuator" activation="manual" exe="python3" pwd="../services/dummy_door_actuator">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/door_actuator.err"/>
@@ -142,7 +141,7 @@
                </adapter>
             </service>
          </icebox>
-         <server id="MotionSensor" activation="manual" exe="python3" pwd="./services/dummy_motion_sensor">
+         <server id="MotionSensor" activation="manual" exe="python3" pwd="../services/dummy_motion_sensor">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/motion_sensor.err"/>
@@ -152,7 +151,7 @@
                <object identity="motion-sensor"/>
             </adapter>
          </server>
-         <server id="PersonRecognizer" activation="manual" exe="python" pwd="./services/dummy_person_recognizer">
+         <server id="PersonRecognizer" activation="manual" exe="python" pwd="../services/dummy_person_recognizer">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/person_recognizer.err"/>
@@ -172,7 +171,7 @@
                <object identity="property-server"/>
             </adapter>
          </server>
-         <server id="SconeWrapper" activation="manual" exe="scone-wrapper">
+         <server id="SconeWrapper" activation="manual" exe="scone-wrapper" pwd="../">
             <properties>
                <property name="Ice.StdOut" value="/tmp/scone-wrapper.out"/>
                <property name="Ice.StdErr" value="/tmp/scone-wrapper.err"/>
@@ -181,7 +180,7 @@
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SnapshotService" activation="manual" exe="python" pwd="./services/dummy_snapshot_service">
+         <server id="SnapshotService" activation="manual" exe="python" pwd="../services/dummy_snapshot_service">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/snapshot_service.err"/>
@@ -193,7 +192,7 @@
                <object identity="snapshot-service"/>
             </adapter>
          </server>
-         <server id="SpeechToText" activation="manual" exe="python3" pwd="./services/dummy_speech_to_text">
+         <server id="SpeechToText" activation="manual" exe="python3" pwd="../services/dummy_speech_to_text">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/speech_to_text.err"/>

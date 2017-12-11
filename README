@@ -1,8 +1,6 @@
-Cerberus
-===================
+# Cerberus
 
 Plugable services repository, Icegrid applications and Scone knowledge.
-----------
 
 The repository is structured as follows:
 
@@ -13,7 +11,6 @@ The repository is structured as follows:
  - **install-dependencies.sh**: Bash script to install the services dependencies.
 
 
-----------
 
 
 |      Services     | dummy | real | debian package |

@@ -1,0 +1,12 @@
+Source: authenticator
+Section: utils
+Priority: extra
+Maintainer: Cristian Trapero Mora <critramo@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), quilt
+Standards-Version: 3.9.8
+
+Package: authenticator
+Architecture: all
+Depends: ${misc:Depends}
+Description: FIXME: Short description of the authenticator package
+ FIXME: long description about the basic features of the authenticator package

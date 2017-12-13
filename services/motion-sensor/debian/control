@@ -1,0 +1,12 @@
+Source: motion-sensor
+Section: utils
+Priority: extra
+Maintainer: Cristian Trapero Mora <critramo@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), quilt
+Standards-Version: 3.9.8
+
+Package: motion-sensor
+Architecture: all
+Depends: ${misc:Depends}
+Description: FIXME: Short description of the motion-sensor package
+ FIXME: long description about the basic features of the motion-sensor package

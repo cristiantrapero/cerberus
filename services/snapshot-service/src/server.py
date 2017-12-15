@@ -67,7 +67,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("snapshot-service"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        print("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()

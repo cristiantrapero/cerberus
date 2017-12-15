@@ -1,20 +1,18 @@
-Source: snapshot-service
-Section: python
+Source: person-recognizer
+Section: utils
 Priority: extra
 Maintainer: Cristian Trapero Mora <critramo@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), quilt
 Standards-Version: 3.9.8
 
-Package: snapshot-service
+Package: person-recognizer
 Architecture: all
-Depends:
+Depends: 
  ${misc:Depends},
  python,
  python-zeroc-ice36,
  citisim-slice,
  libcitisim,
- python-pip,
- libopencv-dev,
- python-opencv
-Description: Cerberus Snapshot Service
- Service that captures a snapshot from a IP camera.
+ python-pip
+Description: Cerberus Person Recognizer
+ This service recognize a person usign the Openface Library

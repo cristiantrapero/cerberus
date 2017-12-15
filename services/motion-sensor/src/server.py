@@ -4,6 +4,7 @@ import sys
 import time
 import logging
 import Ice
+
 import libcitisim as citisim
 from libcitisim import SmartObject
 
@@ -76,7 +77,7 @@ class Server(Ice.Application):
         monitor.start()
 
         proxy = citisim.remove_private_endpoints(proxy)
-        print("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()

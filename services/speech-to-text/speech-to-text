@@ -1,6 +1,6 @@
 #!/bin/bash --
 # -*- coding: utf-8; mode: shell-script; tab-width: 4 -*-
 
-CONFIG=${1:-"--Ice.Config=src/server.config"}
+CONFIG=${1:-"--Ice.Config=/etc/default/speech-to-text.config"}
 
-src/server.py $CONFIG
+python3 /usr/lib/speech-to-text/server.py $CONFIG

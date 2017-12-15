@@ -1,12 +1,19 @@
 Source: clip-service
-Section: utils
+Section: python3
 Priority: extra
 Maintainer: Cristian Trapero Mora <critramo@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), quilt
 Standards-Version: 3.9.8
+Homepage: https://bitbucket.org/arco_group/cerberus
 
 Package: clip-service
 Architecture: all
-Depends: ${misc:Depends}
-Description: FIXME: Short description of the clip-service package
- FIXME: long description about the basic features of the clip-service package
+Depends: 
+ ${misc:Depends},
+ python3,
+ python3-zeroc-ice,
+ citisim-slice,
+ libcitisim,
+ python3-pip
+Description: Cerberus Clip Service
+ This service record an audio file from the audio interface in a Raspberry Pi.

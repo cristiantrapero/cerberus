@@ -63,7 +63,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("clip-service"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        print("Server ready:\n'{}'".format(proxy))
+        loggin.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()
@@ -72,4 +72,8 @@ class Server(Ice.Application):
         return 0
 
 
-sys.exit(Server().main(sys.argv))
+if __name__ == '__main__':
+    try:
+        sys.exit(Server().main(sys.argv))
+    except SystemExit:
+        sys.exit(1)

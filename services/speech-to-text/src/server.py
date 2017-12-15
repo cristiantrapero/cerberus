@@ -13,6 +13,8 @@ from watson_developer_cloud import SpeechToTextV1
 import libcitisim as citisim
 from libcitisim import SmartObject
 
+CONFIG_FILE="src/server.config"
+
 class SpeechToTextI(SmartObject.SpeechToText):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
@@ -52,7 +54,7 @@ class SpeechToTextI(SmartObject.SpeechToText):
                 audio_file, model = 'es-ES_BroadbandModel', content_type = 'audio/wav',
                 word_confidence = True),
                 indent = 2)
-            print(response)
+            loggin.info(response)
 
             response_data = json.loads(response)
 
@@ -84,7 +86,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("speech-to-text"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        print("Server ready:\n'{}'".format(proxy))
+        loggin.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()

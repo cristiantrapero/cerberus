@@ -8,5 +8,5 @@ Standards-Version: 3.9.8
 Package: authenticator
 Architecture: all
 Depends: ${misc:Depends}
-Description: FIXME: Short description of the authenticator package
- FIXME: long description about the basic features of the authenticator package
+Description: FIXME: Cerberus Authenticator
+ This service is responsible for seeing if an identification is authorized and if the command corresponds to open the door

@@ -20,6 +20,11 @@ from sklearn.mixture import GMM
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 
+stderrLogger = logging.StreamHandler()
+stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+logging.getLogger().addHandler(stderrLogger)
+logging.getLogger().setLevel(logging.DEBUG)
+
 MODEL_PREDICTIONFACE = './models/dlib/shape_predictor_68_face_landmarks.dat'
 MODEL_TORCH = './models/openface/nn4.small2.v1.t7'
 
@@ -82,10 +87,10 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         person_id = person.decode('utf-8')
 
         if confidence > 0.60:
-            print("Identified person: {} with {} confidence".format(person_id, confidence))
+            logging.info("Identified person: {} with {} confidence".format(person_id, confidence))
             return person_id
         else:
-            print("Identified unknown: {} with {} confidence".format(person_id, confidence))
+            logging.info("Identified unknown: {} with {} confidence".format(person_id, confidence))
             person_id = "unknown"
             return person_id
 
@@ -105,7 +110,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("person-recognizer"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        print("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()

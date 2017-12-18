@@ -1,5 +1,5 @@
 Source: person-recognizer
-Section: utils
+Section: python
 Priority: extra
 Maintainer: Cristian Trapero Mora <critramo@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), quilt
@@ -13,6 +13,9 @@ Depends:
  python-zeroc-ice36,
  citisim-slice,
  libcitisim,
- python-pip
+ python-pip,
+ libopencv-dev,
+ python-opencv,
+ python-numpy
 Description: Cerberus Person Recognizer
  This service recognize a person usign the Openface Library

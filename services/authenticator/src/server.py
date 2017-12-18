@@ -2,10 +2,15 @@
 # -*- coding: utf-8 -*-
 import sys
 import Ice
+import logging
 
 import libcitisim as citisim
 from libcitisim import SmartObject
 
+stderrLogger = logging.StreamHandler()
+stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+logging.getLogger().addHandler(stderrLogger)
+logging.getLogger().setLevel(logging.DEBUG)
 
 class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
     observer_cast = SmartObject.DigitalSinkPrx
@@ -52,7 +57,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("authenticator"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        print("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()

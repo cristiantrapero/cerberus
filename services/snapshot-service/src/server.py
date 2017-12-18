@@ -10,6 +10,11 @@ import Ice
 import libcitisim as citisim
 from libcitisim import SmartObject
 
+stderrLogger = logging.StreamHandler()
+stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+logging.getLogger().addHandler(stderrLogger)
+logging.getLogger().setLevel(logging.DEBUG)
+
 CONFIG_FILE = 'src/server.config'
 
 
@@ -46,8 +51,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
             time.sleep(delay)
 
     def take_snapshot(self, current=None):
-        url_snapshot = "http://{}/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(
-                        self.cameraIP, self.CameraUser, self.cameraPass)
+        url_snapshot = "http://{}/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.CameraUser, self.cameraPass)
         urllib.urlretrieve(url_snapshot, "/tmp/snapshot.jpg")
 
 

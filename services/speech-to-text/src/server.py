@@ -13,6 +13,11 @@ from watson_developer_cloud import SpeechToTextV1
 import libcitisim as citisim
 from libcitisim import SmartObject
 
+stderrLogger = logging.StreamHandler()
+stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+logging.getLogger().addHandler(stderrLogger)
+logging.getLogger().setLevel(logging.DEBUG)
+
 CONFIG_FILE="src/server.config"
 
 class SpeechToTextI(SmartObject.SpeechToText):
@@ -86,7 +91,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("speech-to-text"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        loggin.info("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()

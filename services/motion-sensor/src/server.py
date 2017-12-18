@@ -11,6 +11,11 @@ from libcitisim import SmartObject
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
+stderrLogger = logging.StreamHandler()
+stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+logging.getLogger().addHandler(stderrLogger)
+logging.getLogger().setLevel(logging.DEBUG)
+
 CONFIG_FILE = 'src/server.config'
 
 

@@ -6,7 +6,6 @@ export PYTHONPATH  = src
 all:
 
 install:
-	pip3 install watchdog
 	install -d $(DESTDIR)/usr/bin
 	install -m 744 motion-sensor $(DESTDIR)/usr/bin/
 	install -d $(DESTDIR)/usr/lib/motion-sensor/

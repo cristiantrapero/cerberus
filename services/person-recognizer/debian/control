@@ -7,7 +7,7 @@ Standards-Version: 3.9.8
 
 Package: person-recognizer
 Architecture: all
-Depends: 
+Depends:
  ${misc:Depends},
  python,
  python-zeroc-ice36,
@@ -16,6 +16,7 @@ Depends:
  python-pip,
  libopencv-dev,
  python-opencv,
- python-numpy
+ python-numpy,
+ python-sklearn
 Description: Cerberus Person Recognizer
- This service recognize a person usign the Openface Library
+ This service recognize a face person usign the Openface Library

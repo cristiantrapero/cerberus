@@ -8,12 +8,12 @@ Homepage: https://bitbucket.org/arco_group/cerberus
 
 Package: motion-sensor
 Architecture: all
-Depends: 
+Depends:
  ${misc:Depends},
  python3,
  python3-zeroc-ice,
  citisim-slice,
  libcitisim,
- python3-pip
+ python3-watchdog
 Description: Cerberus Motion Sensor
  This service monitor the changes in a directory in order to detect  the images creation in that.

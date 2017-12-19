@@ -8,13 +8,14 @@ Homepage: https://bitbucket.org/arco_group/cerberus
 
 Package: speech-to-text
 Architecture: all
-Depends: 
+Depends:
  ${misc:Depends},
  python3,
  python3-zeroc-ice,
  citisim-slice,
  libcitisim,
- python3-pip,
- python3-numpy
+ python3-numpy,
+ python3-scipy,
+ python3-watson-developer-cloud
 Description: Cerberus Speech to Text Service
  This service transcribe an audio file to text using IBM Watson Service.

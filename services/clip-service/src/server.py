@@ -68,7 +68,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("clip-service"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        loggin.info("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready:\n'{}'".format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()

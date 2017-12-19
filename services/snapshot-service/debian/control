@@ -4,6 +4,8 @@ Priority: extra
 Maintainer: Cristian Trapero Mora <critramo@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), quilt
 Standards-Version: 3.9.8
+Homepage: https://bitbucket.org/arco_group/cerberus
+
 
 Package: snapshot-service
 Architecture: all

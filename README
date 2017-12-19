@@ -13,12 +13,12 @@ The repository is structured as follows:
 
 |      Services     | dummy | real | debian package |
 |:-----------------:|:-----:|:----:|:--------------:|
-| motion_sensor     |  yes  |  yes |       no       |
-| snapshot_service  |  yes  |  yes |       no       |
-| clip_service      |  yes  |  yes |       no       |
-| person_recognizer |  yes  |  yes |       no       |
-| speech_to_text    |  yes  |  yes |       no       |
-| authenticator     |  yes  |  yes |       no       |
-| door_actuator     |  yes  |  no  |       no       |
+| motion-sensor     |  yes  |  yes |       yes      |
+| snapshot-service  |  yes  |  yes |       yes      |
+| clip-service      |  yes  |  yes |       yes      |
+| person-recognizer |  yes  |  yes |       no       |
+| speech-to_text    |  yes  |  yes |       yes      |
+| authenticator     |  yes  |  yes |       yes      |
+| door-actuator     |  yes  |  no  |       no       |
 | scheduler         |   no  |  yes |       no       |
 | simulate_motion   |  yes  |  no  |       no       |

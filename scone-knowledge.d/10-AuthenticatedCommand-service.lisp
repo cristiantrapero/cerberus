@@ -35,7 +35,7 @@
 ;; (x-is-a-y-of-z {identity} {required-argument} {Authenticator.notifyPerson})
 ;; (x-is-a-y-of-z {command} {required-argument} {Authenticator.notifyCommand})
 
-;;(new-statement {person recognition} {happens before} {command recognition})
+;; (new-statement {person recognition} {happens before} {command recognition})
 ;; (x-is-a-y-of-z {person recognition} {subevent} {command execution by authorised person})
 ;; (x-is-a-y-of-z {command recognition} {subevent} {command execution by authorised person})
 

@@ -91,8 +91,7 @@
          </icebox>
       </server-template>
       <node name="node1">
-         <server id="AuthenticatedCommandService" activation="manual" exe="python3" pwd="./services/authenticator">
-            <option>server.py</option>
+         <server id="AuthenticatedCommandService" activation="manual" exe="authenticator">
             <properties>
                <property name="Ice.StdOut" value="/tmp/authenticator.out"/>
                <property name="Ice.StdErr" value="/tmp/authenticator.err"/>
@@ -101,12 +100,12 @@
                <object identity="authenticator"/>
             </adapter>
          </server>
-         <server id="ClipService" activation="manual" exe="python3" pwd="./services/clip_service">
-            <option>server.py</option>
+         <server id="ClipService" activation="manual" exe="clip-service">
             <properties>
                <property name="Ice.StdErr" value="/tmp/clip_service.err"/>
                <property name="Ice.StdOut" value="/tmp/clip_service.out"/>
                <property name="ClipService.RecordTime" value="5"/>
+               <property name="ClipService.Place" value="ITSI"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="clip-service"/>
@@ -141,13 +140,17 @@
                </adapter>
             </service>
          </icebox>
-         <server id="MotionSensor" activation="manual" exe="python3" pwd="./services/motion_sensor">
-            <option>server.py</option>
+         <server id="MotionSensor" activation="manual" exe="motion-sensor">
             <properties>
                <property name="Ice.StdErr" value="/tmp/motion_sensor.err"/>
                <property name="Ice.StdOut" value="/tmp/motion_sensor.out"/>
                <property name="MotionSensor.MonitoredDirectory" value="/home/"/>
                <property name="MotionSensor.Place" value="ITSI"/>
+               <property name="MotionSensor.Quality" value="255"/>
+               <property name="MotionSensor.Expiration" value="30"/>
+               <property name="MotionSensor.Latitude" value="38.99793"/>
+               <property name="MotionSensor.Longitude" value="-3.919898"/>
+               <property name="MotionSensor.Altitude" value="637.10"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="motion-sensor"/>
@@ -182,8 +185,7 @@
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SnapshotService" activation="manual" exe="python" pwd="./services/snapshot_service">
-            <option>server.py</option>
+         <server id="SnapshotService" activation="manual" exe="snapshot-service">
             <properties>
                <property name="Ice.StdErr" value="/tmp/snapshot_service.err"/>
                <property name="Ice.StdOut" value="/tmp/snapshot_service.out"/>
@@ -192,13 +194,13 @@
                <property name="SnapshotService.CameraIP" value="192.168.1.2"/>
                <property name="SnapshotService.CameraUser" value="admin"/>
                <property name="SnapshotService.CameraPass" value="admin"/>
+               <property name="SnapshotService.Place" value="ITSI"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="snapshot-service"/>
             </adapter>
          </server>
-         <server id="SpeechToText" activation="manual" exe="python3" pwd="./services/speech_to_text">
-            <option>server.py</option>
+         <server id="SpeechToText" activation="manual" exe="speech-to-text">
             <properties>
                <property name="Ice.StdErr" value="/tmp/speech_to_text.err"/>
                <property name="Ice.StdOut" value="/tmp/speech_to_text.out"/>

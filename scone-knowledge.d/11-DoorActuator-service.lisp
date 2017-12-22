@@ -15,7 +15,7 @@
 
 
 (in-context {actuate_bolt BC})
-(new-indv {athorizated to actuate bolt} {command execution by authorised person})
+(new-indv {authorizated to actuate bolt} {command execution by authorised person})
 
 
 (in-context {dharma})

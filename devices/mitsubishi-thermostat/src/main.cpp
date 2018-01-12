@@ -47,13 +47,22 @@ blink(byte count, byte delay_ms) {
 }
 
 void
+button_press(byte button) {
+    digitalWrite(button, HIGH);
+    delay(200);
+    digitalWrite(button, LOW);
+}
+
+void
 IoT_NodeAdminI_restart(IoT_NodeAdminPtr self) {
     async_restart_node();
+    blink(3, 50);    
 }
 
 void
 IoT_NodeAdminI_factoryReset(IoT_NodeAdminPtr self) {
     async_factory_reset();
+    blink(3, 50);
 }
 
 void
@@ -61,13 +70,28 @@ IoT_WiFiAdminI_setupWiFi(IoT_WiFiAdminPtr self,
                          Ice_String ssid,
                          Ice_String key) {
     store_wifi_settings(ssid, key);
+    blink(3, 50);
+}
+
+void
+SmartObject_DigitalSinkI_notify(SmartObject_DigitalSinkPtr self,
+                                Ice_Bool value,
+                                Ice_String source,
+                                SmartObject_Metadata data) {
+
+    // status has an inverted logic
+    bool status = !digitalRead(PIN_STATUS);
+
+    if (value != status)
+        button_press(PIN_POWER);
+    blink(3, 50);
 }
 
 void setup() {
     Serial.begin(115200);
     Serial.flush();
     setup_pins();
-    blink(3, 100);
+    blink(3, 200);
 
     Serial.println("\n------\nBooting...\n");
 
@@ -88,6 +112,7 @@ void setup() {
     Ice_ObjectAdapter_add(&adapter, (Ice_ObjectPtr)&node, "Node");
 
     Serial.println("Boot done!\n");
+    blink(1, 50);
 }
 
 void loop() {

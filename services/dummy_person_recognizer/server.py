@@ -18,10 +18,6 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         super(self.__class__, self).__init__()
 
     def notify(self, data, source, metadata, current=None):
-        if not self.observer:
-            logging.error("observer not set")
-            return
-
         self.metadata = metadata
 
         # Decode the data to read
@@ -30,9 +26,13 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         # Get the id of the person
         personID = self.recognize_person(snapshot)
 
-        self.observer.begin_notifyPerson(self.metadata, personID)
+        self.observer.begin_notifyPerson(personID, self.metadata)
 
     def recognize_person(self, snapshot, current=None):
+        if not self.observer:
+            logging.error("observer not set")
+            return
+
         personID = "SteveCarell"
         return personID
 
@@ -52,5 +52,7 @@ class Server(Ice.Application):
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
+        return 0
 
+    
 sys.exit(Server().main(sys.argv))

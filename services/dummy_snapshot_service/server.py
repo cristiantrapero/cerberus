@@ -20,7 +20,6 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
     def notify(self, source, metadata, current=None):
         self.metadata = metadata
-
         self.trigger(self.properties.getProperty('SnapshotService.Snapshots'),
                      self.properties.getProperty('SnapshotService.Delay'))
 
@@ -54,6 +53,8 @@ class Server(Ice.Application):
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
+
+        return 0
 
 
 sys.exit(Server().main(sys.argv))

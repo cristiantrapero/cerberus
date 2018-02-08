@@ -137,8 +137,9 @@
                </properties>
                <adapter name="IceStorm.Publish" endpoints="default" id="${service}.Publish"/>
                <adapter name="IceStorm.TopicManager" endpoints="default" id="${service}.TopicManager">
-                  <object identity="icestorm"/>
+                  <object identity="IceStorm/TopicManager"/>
                </adapter>
+               <dbenv name="Freeze.DbEnv.IceStorm"/>
             </service>
          </icebox>
          <server id="MotionSensor" activation="manual" exe="python3" pwd="../services/dummy_motion_sensor">
@@ -168,7 +169,7 @@
                <property name="PropertyService.Data" value="/tmp/ps.db"/>
             </properties>
             <adapter name="PropertyServiceAdapter" endpoints="default" id="${server}.PropertyServiceAdapter">
-               <object identity="property-server"/>
+               <object identity="PropertyServer"/>
             </adapter>
          </server>
          <server id="SconeWrapper" activation="manual" exe="scone-wrapper" pwd="../">
@@ -206,11 +207,11 @@
             <properties>
                <property name="Ice.StdErr" value="/tmp/wiring-service.err"/>
                <property name="Ice.StdOut" value="/tmp/wiring-service.out"/>
-               <property name="IceStorm.TopicManager.Proxy" value="icestorm"/>
-               <property name="PropertyService.Proxy" value="property-server"/>
+               <property name="IceStorm.TopicManager.Proxy" value="IceStorm/TopicManager"/>
+               <property name="PropertyService.Proxy" value="PropertyServer"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
-               <object identity="wiring-service"/>
+               <object identity="WiringService"/>
             </adapter>
          </server>
       </node>

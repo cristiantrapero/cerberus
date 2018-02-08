@@ -52,5 +52,7 @@ class Server(Ice.Application):
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
+        return 0
+
 
 sys.exit(Server().main(sys.argv))

@@ -21,7 +21,7 @@ show-nodes:
 	$(IG_ADMIN) -e "node list"
 
 run-scheduler:
-	../services/scheduler/scheduler.py --Ice.Config=locator.config scone wiring-service
+	../services/scheduler/scheduler.py --Ice.Config=locator.config scone WiringService
 
 simulate-motion:
 	../services/simulate_motion/simulate-motion.py --Ice.Config=locator.config

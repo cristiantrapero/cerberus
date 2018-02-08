@@ -21,12 +21,12 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
             return
 
         self.metadata = metadata
-        command = self.speechToText(data)
-        self.observer.begin_notifyCommand(command, self.metadata)
+        transcription = self.speechToText(data)
+        self.observer.begin_notifyCommand(transcription, self.metadata)
 
     def speechToText(self, audio):
-        command = "abreme la puerta"
-        return command
+        transcription = "abreme la puerta"
+        return transcription
 
 
 class Server(Ice.Application):
@@ -43,6 +43,8 @@ class Server(Ice.Application):
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
+
+        return 0
 
 
 sys.exit(Server().main(sys.argv))

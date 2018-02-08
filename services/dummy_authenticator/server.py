@@ -7,8 +7,8 @@ import libcitisim as citisim
 from libcitisim import SmartObject
 
 
-class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
-    observer_cast = SmartObject.DigitalSinkPrx
+class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandService):
+    observer_cast = SmartObject.EventSinkPrx
 
     def __init__(self):
         self.metadata_personID = None
@@ -30,10 +30,11 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
         self.checkAuthorization()
 
     def checkAuthorization(self, current=None):
+        print(self.command)
         if self.personID in self.person_authorized:
             if any(x in self.command for x in self.command_authorized):
                 if self.metadata_personID.place == self.metadata_command.place:
-                    self.observer.begin_notify(True, self.metadata_personID.place, self.metadata_personID)
+                    self.observer.begin_notify(self.metadata_personID.place, self.metadata_personID)
         else:
             print("No authorized person")
 
@@ -51,6 +52,8 @@ class Server(Ice.Application):
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
+
+        return 0
 
 
 sys.exit(Server().main(sys.argv))

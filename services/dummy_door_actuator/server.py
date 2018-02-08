@@ -8,20 +8,17 @@ import libcitisim as citisim
 from libcitisim import SmartObject
 
 
-class ActuatorI(SmartObject.DigitalSink):
+class ActuatorI(SmartObject.EventSink):
     def __init__(self, properties):
         self.metadata = None
         self.properties = properties
         super(self.__class__, self).__init__()
 
-    def notify(self, value, source, metadata, current=None):
-        if value:
-            time_diff = time.time() - metadata.timestamp
-            if time_diff < self.properties.getProperty('DoorActuator.TTL'):
-                print("Open door.\n")
-            else:
-                print("Door closed.\n")
-
+    def notify(self, source, metadata, current=None):
+        if (time.time() - metadata.timestamp) < self.properties.getProperty('DoorActuator.TTL'):
+            print("Open door.\n")
+        else:
+            print("Door keep closed.\n")
 
 class Server(Ice.Application):
     def run(self, argv):
@@ -38,6 +35,8 @@ class Server(Ice.Application):
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
+
+        return 0
 
 
 sys.exit(Server().main(sys.argv))

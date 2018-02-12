@@ -41,6 +41,8 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
+        logger = broker.getLogger()
+        logger.trace("info", "snapshot service started")
         properties = broker.getProperties()
         servant = SnapshotServiceI(properties)
 

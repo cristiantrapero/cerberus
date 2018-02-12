@@ -33,6 +33,8 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
 class MotionSensor(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
+        logger = broker.getLogger()
+        logger.trace("info", "motion sensor started")
         servant = MotionSensorI()
 
         adapter = broker.createObjectAdapterWithEndpoints('Adapter', 'tcp')

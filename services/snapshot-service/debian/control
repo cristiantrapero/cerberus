@@ -1,0 +1,22 @@
+Source: snapshot-service
+Section: python
+Priority: extra
+Maintainer: Cristian Trapero Mora <critramo@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), quilt
+Standards-Version: 3.9.8
+Homepage: https://bitbucket.org/arco_group/cerberus
+
+
+Package: snapshot-service
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python,
+ python-zeroc-ice36,
+ citisim-slice,
+ libcitisim,
+ python-pip,
+ libopencv-dev,
+ python-opencv
+Description: Cerberus Snapshot Service
+ Service that captures a snapshot from a IP camera.

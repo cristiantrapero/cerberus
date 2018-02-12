@@ -1,9 +1,0 @@
-Services                    | dummy |
-------------------------------------------------------------------------------
-motion sensor               |   X   |
-snapshot service	    |    ?   |
-person recognizer	    |	 ?   |
-clip service		    |	  X  |
-speech to text		    |	  X  |
-authenticated command service |	  X  |
-door actuator               |   X   |

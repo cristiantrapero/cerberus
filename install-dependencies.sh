@@ -52,8 +52,6 @@ echo "=================================================="
 cd $OPENFACE
 sudo pip2 install -r requirements.txt
 sudo python setup.py install
-sudo pip2 install --user --ignore-installed -r ./demos/web/requirements.txt
-sudo pip2 install -r ./training/requirements.txt
 
 echo "=================================================="
 echo "          Instalando OpenCV para Python"

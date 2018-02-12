@@ -1,0 +1,12 @@
+Source: authenticator
+Section: utils
+Priority: extra
+Maintainer: Cristian Trapero Mora <critramo@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), quilt
+Standards-Version: 3.9.8
+
+Package: authenticator
+Architecture: all
+Depends: ${misc:Depends}
+Description: Cerberus Authenticator
+ This service is responsible for seeing if an identification is authorized and if the command corresponds to open the door

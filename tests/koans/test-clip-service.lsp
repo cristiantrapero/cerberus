@@ -22,7 +22,7 @@
 ; More in a future lesson, but for now, consider t to be true,
 ; and nil to be false.
 
-(load "../src/knowledge/scone-knowledge.d/load")
+(load "../src/scone-knowledge.d/load")
 
 (define-test is-capture_audio-an-event?
     (in-context {dharma})
@@ -49,7 +49,7 @@
   (assert-equal *context* (lookup-element {dharma}))
   (assert-equal (car (cddar (list-context-contents {capture_audio BC})))
 		(lookup-element {sound appears in the scene})))
-  
+
 (define-test in-after-context-of-capture_audio-an-audio-file-is-recorded
     (in-context {dharma})
   (assert-equal *context* (lookup-element {dharma}))

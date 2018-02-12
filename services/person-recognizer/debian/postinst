@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./usr/lib/person-recognizer/models/get-models.sh

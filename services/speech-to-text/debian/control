@@ -1,0 +1,21 @@
+Source: speech-to-text
+Section: utils
+Priority: extra
+Maintainer: Cristian Trapero Mora <critramo@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), quilt
+Standards-Version: 3.9.8
+Homepage: https://bitbucket.org/arco_group/cerberus
+
+Package: speech-to-text
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-zeroc-ice,
+ citisim-slice,
+ libcitisim,
+ python3-numpy,
+ python3-scipy,
+ python3-watson-developer-cloud
+Description: Cerberus Speech to Text Service
+ This service transcribe an audio file to text using IBM Watson Service.

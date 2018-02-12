@@ -20,13 +20,15 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
 
         metadata = citisim.MetadataHelper(
             timestamp = 10,
-            quality = 200,
-            expiration = 10,
-            latitude = 38.99793,
-            longitude = 3.919898,
-            altitude = 637.10,
-            place = 'ITSI').to_dict()
+            # quality = 200,
+            # expiration = 10,
+            # latitude = 38.99793,
+            # longitude = 3.919898,
+            # altitude = 637.10,
+            # place = 'ITSI'
+        ).to_dict()
 
+        print(metadata)
         self.observer.begin_notify('ITSI', metadata)
 
 

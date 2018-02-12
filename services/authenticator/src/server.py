@@ -13,14 +13,14 @@ logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.DEBUG)
 
 class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
-    observer_cast = SmartObject.DigitalSinkPrx
+    observer_cast = SmartObject.EventSinkPrx
 
     def __init__(self):
         self.metadata_personID = None
         self.metadata_command = None
         self.personID = None
         self.command = None
-        self.person_authorized = ['MariaJose', 'David', 'Cristian', 'SteveCarell']
+        self.person_authorized = ['Cristian', 'SteveCarell']
         self.command_authorized = ['abrir puerta', 'abrir', 'abreme', 'abrir la puerta', 'abreme la puerta', 'abre la puerta', 'abre']
         super(self.__class__, self).__init__()
 
@@ -38,7 +38,7 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
         if self.personID in self.person_authorized:
             if any(x in self.command for x in self.command_authorized):
                 if self.metadata_personID.place == self.metadata_command.place:
-                    self.observer.begin_notify(True, self.metadata_personID.place, self.metadata_personID)
+                    self.observer.begin_notify(self.metadata_personID.place, self.metadata_personID)
         else:
             logging.info("No authorized person")
 

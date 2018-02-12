@@ -135,11 +135,12 @@
                   <property name="Ice.StdErr" value="/tmp/icestorm.err"/>
                   <property name="Freeze.DbEnv.IceStorm.DbHome" value="/tmp/db/is.db"/>
                </properties>
-               <adapter name="IceStorm.Publish" endpoints="default" id="${service}.Publish"/>
+               <adapter name="IceStorm.Publish" endpoints="default" id="${service}.Publish">
+                  <object identity="IceStorm/Publish"/>
+               </adapter>
                <adapter name="IceStorm.TopicManager" endpoints="default" id="${service}.TopicManager">
                   <object identity="IceStorm/TopicManager"/>
                </adapter>
-               <dbenv name="Freeze.DbEnv.IceStorm"/>
             </service>
          </icebox>
          <server id="MotionSensor" activation="manual" exe="python3" pwd="../services/dummy_motion_sensor">
@@ -167,6 +168,7 @@
                <property name="Ice.StdErr" value="/tmp/property-service.err"/>
                <property name="Ice.StdOut" value="/tmp/property-service.out"/>
                <property name="PropertyService.Data" value="/tmp/ps.db"/>
+               <property name="Ice.ThreadPool.Server.Size" value="10"/>
             </properties>
             <adapter name="PropertyServiceAdapter" endpoints="default" id="${server}.PropertyServiceAdapter">
                <object identity="PropertyServer"/>

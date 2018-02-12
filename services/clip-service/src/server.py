@@ -43,6 +43,7 @@ class ClipService(citisim.ObservableMixin, SmartObject.ClipService):
         # plughw is the sound card interface
         process = subprocess.Popen(['arecord -D plughw:0 --duration=%s -f cd /tmp/record.wav' % recordTime],
                                     shell = True, stdout=subprocess.PIPE)
+                                    
         output, error = process.communicate()
 
         rate, samples = scipy.io.wavfile.read('/tmp/record.wav')

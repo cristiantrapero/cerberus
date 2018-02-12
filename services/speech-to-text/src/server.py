@@ -20,7 +20,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 CONFIG_FILE="src/server.config"
 
-class SpeechToTextI(SmartObject.SpeechToText):
+class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
     def __init__(self, properties):

@@ -9,9 +9,14 @@ import libcitisim as citisim
 from libcitisim import SmartObject
 mkey = SmartObject.MetadataField
 
-class Cliente(Ice.Application):
-    def run(self, argv):
-        motion = self.communicator().stringToProxy("motion-sensor")
+class Client(Ice.Application):
+    def run(self, args):
+        if len(args) == 2:
+            strproxy = args[1]
+        else:
+            strproxy = 'motion-sensor'
+
+        motion = self.communicator().stringToProxy(strproxy)
 
         if not motion:
             raise RuntimeError('Invalid proxy')
@@ -21,4 +26,4 @@ class Cliente(Ice.Application):
         return 0
 
 
-sys.exit(Cliente().main(sys.argv))
+sys.exit(Client().main(sys.argv))

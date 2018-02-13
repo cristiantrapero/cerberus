@@ -2,33 +2,53 @@
 # -*- mode:makefile -*-
 
 NODES=$(notdir $(basename $(shell ls config/node*.config | sort -r)))
-NODE_DIRS=$(addprefix /tmp/db/, $(NODES))
+NODE_DIRS=$(addprefix /tmp/cerberus/db/, $(NODES))
 IG_ADMIN=icegridadmin --Ice.Config=config/locator.config -u user -p pass
+APP=Access Control Service
 
-start-grid: /tmp/db/registry $(NODE_DIRS) /tmp/db/is.db 
+define GRID_STOP
+    @if netstat -lptn 2> /dev/null | grep ":4061" > /dev/null; then \
+	for node in $(NODES); do \
+            $(IG_ADMIN) -e "node shutdown $$node"; \
+	done; \
+	killall icegridnode; \
+	echo -- grid stop ok; \
+    fi
+endef
+
+define WAIT_READY
+    @while ! $(IG_ADMIN) -e "node list" 2> /dev/null | grep "node1" > /dev/null; do \
+	echo -- waiting registry ready; \
+        sleep 1; \
+    done
+endef
+
+define APP_RM
+    $(call WAIT_READY)
+    @if $(IG_ADMIN) -e "application remove '$1'" > /dev/null 2>&1; then \
+        echo -- app \"$1\" removed ok; \
+    fi
+endef
+
+grid-restart: grid-stop grid-start
+
+grid-start: /tmp/cerberus/db/registry $(NODE_DIRS) /tmp/cerberus/db/icestorm
 	icegridnode --Ice.Config=config/node1.config &
-	@while ! netstat -lptn 2> /dev/null | grep ":4061" > /dev/null; do \
-	    sleep 1; \
-	done
-	@echo -- ok
+	$(call WAIT_READY)
+	@echo -- grid start ok
 
-stop-grid: 
-	@for node in $(NODES); do \
-	    $(IG_ADMIN) -e "node shutdown $$node"; \
-	done
+grid-stop:
+	$(call GRID_STOP)
 
-	@killall icegridnode
-	@echo -- ok
+app-add: app-rm
+	$(call WAIT_READY)
+	$(IG_ADMIN) -e "application add config/dummy-app.xml"
+	@echo -- app \"$(APP)\" added ok;
 
 app-rm:
-	$(IG_ADMIN) -e "application remove 'Access Control System Prototipe'"
+	$(call APP_RM,$(APP))
 
-deploy:
-	$(IG_ADMIN) -e "application add config/dummy-app.xml"
-	$(IG_ADMIN) -e "server list"
-	@echo -- app added
-
-start-services: 
+start-services:
 	@for server in $(shell $(IG_ADMIN) -e "server list"); do \
 	   $(IG_ADMIN) -e "server start $$server"; \
 	   echo "$$server started"; \
@@ -46,15 +66,15 @@ simulate-motion:
 run-test-wiring-service:
 	./tests/wiring-service.py --Ice.Config=config/locator.config WiringService
 
-restart: clean start-grid deploy
+restart: clean grid-start app-add
 
-setup: start-services run-scheduler simulate-motion
 
-/tmp/db/%:
+/tmp/cerberus/%:
 	mkdir -p $@
 
-clean: 
+clean:
+	$(call GRID_STOP)
 	-$(RM) *~
-	-$(RM) -r ../.scone
-	-$(RM) -r /tmp/db
-	-$(RM) -r /tmp/db/is.db
+	-$(RM) -r .scone
+	-$(RM) -r /tmp/cerberus
+	@echo -- clean ok

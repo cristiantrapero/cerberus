@@ -43,6 +43,9 @@ run-scheduler:
 simulate-motion:
 	./services/simulate_motion/simulate-motion.py --Ice.Config=config/locator.config
 
+run-test-wiring-service:
+	./tests/wiring-service.py --Ice.Config=config/locator.config WiringService
+
 restart: clean start-grid deploy
 
 setup: start-services run-scheduler simulate-motion

@@ -30,13 +30,16 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
         self.checkAuthorization()
 
     def checkAuthorization(self, current=None):
-        print(self.command)
         if self.personID in self.person_authorized:
             if any(x in self.command for x in self.command_authorized):
-                if self.metadata_personID.place == self.metadata_command.place:
-                    self.observer.begin_notify(self.metadata_personID.place, self.metadata_personID)
+                if self.metadata_personID.get('Place') == self.metadata_command.get('Place'):
+                    if not self.observer:
+                        logging.error("observer not set")
+                        return
+
+                    self.observer.begin_notify(self.metadata_personID.get('Place'), self.metadata_personID)
         else:
-            print("No authorized person")
+            print("{} is not authorized person".format(self.personID))
 
 class Server(Ice.Application):
     def run(self, argv):

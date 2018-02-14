@@ -25,7 +25,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 
         # Get the id of the person
         personID = self.recognize_person(snapshot)
-
+        print(self.metadata)
         self.observer.begin_notifyPerson(personID, self.metadata)
 
     def recognize_person(self, snapshot, current=None):
@@ -54,5 +54,5 @@ class Server(Ice.Application):
 
         return 0
 
-    
+
 sys.exit(Server().main(sys.argv))

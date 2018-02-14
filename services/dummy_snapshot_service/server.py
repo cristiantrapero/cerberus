@@ -28,14 +28,14 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
             logging.error("observer not set")
             return
 
-        for i in range(count):
+        for i in range(int(count)):
             fd = cv2.imread("./test-image.jpg")
 
             # Encode image to send as message
             out, buf = cv2.imencode('.jpg', fd)
 
             self.observer.begin_notify(buf, "ISTI-camera", self.metadata)
-            time.sleep(delay)
+            time.sleep(int(delay))
 
 
 class Server(Ice.Application):

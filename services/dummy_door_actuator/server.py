@@ -15,7 +15,7 @@ class ActuatorI(SmartObject.EventSink):
         super(self.__class__, self).__init__()
 
     def notify(self, source, metadata, current=None):
-        if (time.time() - metadata.timestamp) < self.properties.getProperty('DoorActuator.TTL'):
+        if (int(time.time() - metadata.get('Timestamp', 1518598521))) < int(self.properties.getProperty('DoorActuator.TTL')):
             print("Open door.\n")
         else:
             print("Door keep closed.\n")

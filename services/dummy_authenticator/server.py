@@ -1,11 +1,13 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 import sys
+import logging
 import Ice
 
 import libcitisim as citisim
 from libcitisim import SmartObject
 
+from SmartObject import MetadataField
 
 class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandService):
     observer_cast = SmartObject.EventSinkPrx
@@ -15,7 +17,7 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
         self.metadata_command = None
         self.personID = None
         self.command = None
-        self.person_authorized = ['MariaJose', 'David', 'Cristian', 'SteveCarell']
+        self.person_authorized = ['SteveCarell', 'Cristian']
         self.command_authorized = ['abrir puerta', 'abrir', 'abreme', 'abrir la puerta', 'abreme la puerta', 'abre la puerta', 'abre']
         super(self.__class__, self).__init__()
 
@@ -30,16 +32,22 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
         self.checkAuthorization()
 
     def checkAuthorization(self, current=None):
-        if self.personID in self.person_authorized:
-            if any(x in self.command for x in self.command_authorized):
-                if self.metadata_personID.get('Place') == self.metadata_command.get('Place'):
-                    if not self.observer:
-                        logging.error("observer not set")
-                        return
+        if not self.observer:
+            logging.error("observer not set to authenticator service")
+            return
 
-                    self.observer.begin_notify(self.metadata_personID.get('Place'), self.metadata_personID)
-        else:
-            print("{} is not authorized person".format(self.personID))
+        if self.command is not None and self.personID is not None:
+            if self.personID in self.person_authorized:
+                if any(x in self.command for x in self.command_authorized):
+                    placeCommand = self.metadata_command.get(MetadataField.Place)
+                    placePersonID = self.metadata_personID.get(MetadataField.Place)
+                    if placeCommand == placePersonID:
+                        self.observer.begin_notify(placeCommand, self.metadata_personID)
+                        print("{} authorized to {}".format(self.personID, self.command))
+                        self.command = None
+                        self.personID = None
+            else:
+                print("{} is not authorized person".format(self.personID))
 
 class Server(Ice.Application):
     def run(self, argv):

@@ -20,19 +20,18 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
     def notify(self, data, source, metadata, current=None):
         self.metadata = metadata
 
-        # Decode the data to read
-        snapshot = cv2.imdecode(np.frombuffer(data, np.uint8), 1)
-
-        # Get the id of the person
-        personID = self.recognize_person(snapshot)
-        print(self.metadata)
-        self.observer.begin_notifyPerson(personID, self.metadata)
-
-    def recognize_person(self, snapshot, current=None):
         if not self.observer:
-            logging.error("observer not set")
+            logging.error("observer not set to person recognizer")
             return
 
+        # Decode the message to get the snapshot
+        snapshot = cv2.imdecode(np.frombuffer(data, np.uint8), 1)
+        personID = self.recognize_person(snapshot)
+
+        self.observer.begin_notifyPerson(personID, self.metadata)
+        print("identified person as {}".format(personID))
+
+    def recognize_person(self, snapshot, current=None):
         personID = "SteveCarell"
         return personID
 

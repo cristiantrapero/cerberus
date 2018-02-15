@@ -1,8 +1,8 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 import sys
-import Ice
 import logging
+import Ice
 
 import libcitisim as citisim
 from libcitisim import SmartObject
@@ -17,12 +17,13 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
 
     def notify(self, data, source, metadata, current=None):
         if not self.observer:
-            logging.error("observer not set")
+            logging.error("observer not set to speech to text service")
             return
 
         self.metadata = metadata
         transcription = self.speechToText(data)
         self.observer.begin_notifyCommand(transcription, self.metadata)
+        print("message '{}' sent".format(transcription))
 
     def speechToText(self, audio):
         transcription = "abreme la puerta"

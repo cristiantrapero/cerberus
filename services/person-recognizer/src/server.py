@@ -38,12 +38,12 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         self.metadata = None
         super(self.__class__, self).__init__()
 
-    def trigger(self, data, meta, current=None):
+    def notify(self, data, source, metadata, current=None):
         if not self.observer:
             logging.error("observer not set")
             return
 
-        self.metadata = meta
+        self.metadata = metadata
 
         # Decode the data to read
         snapshot = cv2.imdecode(np.frombuffer(data, np.uint8), 1)
@@ -52,6 +52,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         person_id = self.recognize_person(snapshot)
 
         self.observer.notifyPerson(self.metadata, person_id)
+        logging.info("identified person as {}".format(personID))
 
     def recognize_person(self, data ,current=None):
         with open(CLASSIFIER_MODEL, 'rb') as f:

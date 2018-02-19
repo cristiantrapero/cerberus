@@ -91,135 +91,125 @@
          </icebox>
       </server-template>
       <node name="node1">
-         <server id="AuthenticatedCommandService" activation="manual" exe="authenticator">
+         <server id="AuthenticatedCommandService" activation="always" exe="python3" pwd="./services/authenticator/src">
+            <option>server.py</option>
             <properties>
-               <property name="Ice.StdOut" value="/tmp/authenticator.out"/>
-               <property name="Ice.StdErr" value="/tmp/authenticator.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/authenticator.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/authenticator.err"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="authenticator"/>
             </adapter>
          </server>
-         <server id="ClipService" activation="manual" exe="clip-service">
+         <server id="ClipService" activation="always" exe="python3" pwd="./services/clip-service/src">
+            <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/clip_service.err"/>
-               <property name="Ice.StdOut" value="/tmp/clip_service.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/clip_service.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/clip_service.out"/>
                <property name="ClipService.RecordTime" value="5"/>
-               <property name="ClipService.Place" value="ITSI"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="clip-service"/>
             </adapter>
          </server>
-         <server id="DoorActuator" activation="manual" exe="python3" pwd="./services/door_actuator">
-            <option>server.py</option>
+         <icebox id="IceBox" activation="always" exe="icebox">
             <properties>
-               <property name="Ice.StdErr" value="/tmp/door_actuator.err"/>
-               <property name="Ice.StdOut" value="/tmp/door_actuator.out"/>
-               <property name="DoorActuator.TTL" value="15"/>
-            </properties>
-            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
-               <object identity="door-actuator"/>
-            </adapter>
-         </server>
-         <icebox id="IceBox" activation="manual" exe="icebox">
-            <properties>
-               <property name="Ice.StdOut" value="/tmp/icebox.out"/>
-               <property name="Ice.StdErr" value="/tmp/icebox.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/icebox.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/icebox.err"/>
                <property name="Icebox.PrintServicesReady" value="IceStorm"/>
             </properties>
             <service name="IceStorm" entry="IceStormService:createIceStorm">
                <properties>
-                  <property name="Ice.StdOut" value="/tmp/icestorm.out"/>
-                  <property name="Ice.StdErr" value="/tmp/icestorm.err"/>
-                  <property name="Freeze.DbEnv.IceStorm.DbHome" value="/tmp/db/is.db"/>
+                  <property name="Ice.StdOut" value="/tmp/cerberus/icestorm.out"/>
+                  <property name="Ice.StdErr" value="/tmp/cerberus/icestorm.err"/>
+                  <property name="Freeze.DbEnv.IceStorm.DbHome" value="/tmp/cerberus/db/icestorm"/>
                </properties>
-               <adapter name="IceStorm.Publish" endpoints="default" id="${service}.Publish"/>
+               <adapter name="IceStorm.Publish" endpoints="default" id="${service}.Publish">
+                  <object identity="IceStorm/Publish"/>
+               </adapter>
                <adapter name="IceStorm.TopicManager" endpoints="default" id="${service}.TopicManager">
-                  <object identity="icestorm"/>
+                  <object identity="IceStorm/TopicManager"/>
                </adapter>
             </service>
          </icebox>
-         <server id="MotionSensor" activation="manual" exe="motion-sensor">
+         <server id="MotionSensor" activation="always" exe="python3" pwd="./services/motion-sensor/src">
+            <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/motion_sensor.err"/>
-               <property name="Ice.StdOut" value="/tmp/motion_sensor.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/motion_sensor.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/motion_sensor.out"/>
                <property name="MotionSensor.MonitoredDirectory" value="/home/"/>
-               <property name="MotionSensor.Place" value="ITSI"/>
                <property name="MotionSensor.Quality" value="255"/>
                <property name="MotionSensor.Expiration" value="30"/>
                <property name="MotionSensor.Latitude" value="38.99793"/>
                <property name="MotionSensor.Longitude" value="-3.919898"/>
                <property name="MotionSensor.Altitude" value="637.10"/>
+               <property name="MotionSensor.Place" value="ITSI-corridor"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="motion-sensor"/>
             </adapter>
          </server>
-         <server id="PersonRecognizer" activation="manual" exe="python" pwd="./services/person_recognizer">
+         <server id="PersonRecognizer" activation="always" exe="python" pwd="./services/person-recognizer/src">
             <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/person_recognizer.err"/>
-               <property name="Ice.StdOut" value="/tmp/person_recognizer.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/person_recognizer.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/person_recognizer.out"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="person-recognizer"/>
             </adapter>
          </server>
-         <server id="PropertyServer" activation="manual" exe="property-server">
+         <server id="PropertyServer" activation="always" exe="property-server">
             <properties>
-               <property name="Ice.StdErr" value="/tmp/property-service.err"/>
-               <property name="Ice.StdOut" value="/tmp/property-service.out"/>
-               <property name="PropertyService.Data" value="/tmp/ps.db"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/property-service.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/property-service.out"/>
+               <property name="PropertyService.Data" value="/tmp/cerberus/db/property-service"/>
+               <property name="Ice.ThreadPool.Server.Size" value="10"/>
             </properties>
             <adapter name="PropertyServiceAdapter" endpoints="default" id="${server}.PropertyServiceAdapter">
-               <object identity="property-server"/>
+               <object identity="PropertyServer"/>
             </adapter>
          </server>
-         <server id="SconeWrapper" activation="manual" exe="scone-wrapper">
+         <server id="SconeWrapper" activation="always" exe="scone-wrapper" pwd="./">
             <properties>
-               <property name="Ice.StdOut" value="/tmp/scone-wrapper.out"/>
-               <property name="Ice.StdErr" value="/tmp/scone-wrapper.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/scone-wrapper.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/scone-wrapper.err"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SnapshotService" activation="manual" exe="snapshot-service">
+         <server id="SnapshotService" activation="always" exe="python" pwd="./services/snapshot-service/src">
+            <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/snapshot_service.err"/>
-               <property name="Ice.StdOut" value="/tmp/snapshot_service.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/snapshot_service.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/snapshot_service.out"/>
                <property name="SnapshotService.Snapshots" value="1"/>
                <property name="SnapshotService.Delay" value="0"/>
-               <property name="SnapshotService.CameraIP" value="192.168.1.2"/>
-               <property name="SnapshotService.CameraUser" value="admin"/>
-               <property name="SnapshotService.CameraPass" value="admin"/>
-               <property name="SnapshotService.Place" value="ITSI"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="snapshot-service"/>
             </adapter>
          </server>
-         <server id="SpeechToText" activation="manual" exe="speech-to-text">
+         <server id="SpeechToText" activation="always" exe="python3" pwd="./services/speech-to-text/src">
+            <option>server.py</option>
             <properties>
-               <property name="Ice.StdErr" value="/tmp/speech_to_text.err"/>
-               <property name="Ice.StdOut" value="/tmp/speech_to_text.out"/>
-               <property name="SpeechToText.IBMusername" value="ef4417e7-cb37-4898-a457-2a8d9f255d89"/>
-               <property name="SpeechToText.IBMpassword" value="ETRMgWLYmtKj"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/speech_to_text.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/speech_to_text.out"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="speech-to-text"/>
             </adapter>
          </server>
-         <server id="WiringService" activation="manual" exe="citisim-wiring">
+         <server id="WiringService" activation="always" exe="citisim-wiring">
             <properties>
-               <property name="Ice.StdErr" value="/tmp/wiring-service.err"/>
-               <property name="Ice.StdOut" value="/tmp/wiring-service.out"/>
-               <property name="IceStorm.TopicManager.Proxy" value="icestorm"/>
-               <property name="PropertyService.Proxy" value="property-server"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/wiring-service.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/wiring-service.out"/>
+               <property name="IceStorm.TopicManager.Proxy" value="IceStorm/TopicManager"/>
+               <property name="PropertyService.Proxy" value="PropertyServer"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
-               <object identity="wiring-service"/>
+               <object identity="WiringService"/>
             </adapter>
          </server>
       </node>

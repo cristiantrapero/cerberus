@@ -23,12 +23,12 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
     def __init__(self, properties):
         self.metadata = None
-        self.snapshots = properties.getProperty('SnapshotService.Snapshots')
-        self.delay = properties.getProperty('SnapshotService.Delay')
-        self.place = properties.getProperty('SnapshotService.Place')
-        self.cameraIP = properties.getProperty('SnapshotService.CameraIP')
-        self.cameraUser = properties.getProperty('SnapshotService.CameraUser')
-        self.cameraPass = properties.getProperty('SnapshotService.CameraPass')
+        self.snapshots = int(properties.getProperty('SnapshotService.Snapshots'))
+        self.delay = int(properties.getProperty('SnapshotService.Delay'))
+        self.place = str(properties.getProperty('SnapshotService.Place'))
+        self.cameraIP = str(properties.getProperty('SnapshotService.CameraIP'))
+        self.cameraUser = str(properties.getProperty('SnapshotService.CameraUser'))
+        self.cameraPass = str(properties.getProperty('SnapshotService.CameraPass'))
         super(self.__class__, self).__init__()
 
     def notify(self, source, metadata, current=None):
@@ -37,22 +37,24 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
     def trigger(self, snapshots, delay, current=None):
         if not self.observer:
-            logging.error("observer not set")
+            logging.error("observer not set to snapshot service")
             return
 
         for i in range(snapshots):
             self.take_snapshot()
-            fd = cv2.imread("/tmp/snapshot.jpg")
+            fd = cv2.imread("/tmp/cerberus/snapshot.jpg")
 
             # Encode image to send as message
             out, buf = cv2.imencode('.jpg', fd)
 
             self.observer.begin_notify(buf, self.place, self.metadata, buf)
+            print("snapshot taken")
+
             time.sleep(delay)
 
     def take_snapshot(self, current=None):
-        url_snapshot = "http://{}/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.CameraUser, self.cameraPass)
-        urllib.urlretrieve(url_snapshot, "/tmp/snapshot.jpg")
+        url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.CameraUser, self.cameraPass)
+        urllib.urlretrieve(url_snapshot, "/tmp/cerberus/snapshot.jpg")
 
 
 class Server(Ice.Application):

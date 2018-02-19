@@ -7,6 +7,7 @@ import Ice
 
 import libcitisim as citisim
 from libcitisim import SmartObject
+from SmartObject import MetadataField
 
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
@@ -16,7 +17,7 @@ stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.DEBUG)
 
-CONFIG_FILE = 'src/server.config'
+CONFIG_FILE = 'server.config'
 
 
 class EventHandler(PatternMatchingEventHandler):
@@ -33,21 +34,21 @@ class EventHandler(PatternMatchingEventHandler):
         self.servant.notify()
 
 
-class ObservableI(citisim.ObservableMixin, SmartObject.Observable):
+class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
     observer_cast = SmartObject.EventSinkPrx
 
     def __init__(self, properties):
-        self.quality = properties.getProperty('MotionSensor.Quality')
-        self.expiration = properties.getProperty('MotionSensor.Expiration')
-        self.latitude = properties.getProperty('MotionSensor.Latitude')
-        self.longitude = properties.getProperty('MotionSensor.Longitude')
-        self.altitude = properties.getProperty('MotionSensor.Altitude')
-        self.place = properties.getProperty('MotionSensor.Place')
+        self.quality = int(properties.getProperty('MotionSensor.Quality'))
+        self.expiration = int(properties.getProperty('MotionSensor.Expiration'))
+        self.latitude = float(properties.getProperty('MotionSensor.Latitude'))
+        self.longitude = float(properties.getProperty('MotionSensor.Longitude'))
+        self.altitude = float(properties.getProperty('MotionSensor.Altitude'))
+        self.place = str(properties.getProperty('MotionSensor.Place'))
         super(self.__class__, self).__init__()
 
-    def notify(self):
+    def notify(self, current=None):
         if not self.observer:
-            logging.error("observer not set")
+            logging.error("observer not set to motion sensor")
             return
 
         data = citisim.MetadataHelper(
@@ -60,7 +61,7 @@ class ObservableI(citisim.ObservableMixin, SmartObject.Observable):
             place = self.place).to_dict()
 
         self.observer.begin_notify(self.place, data)
-
+        print('motion detected on {}'.format(self.place))
 
 class Server(Ice.Application):
     def run(self, args):
@@ -74,12 +75,17 @@ class Server(Ice.Application):
             properties.setProperty('Ice.Config', CONFIG_FILE)
             adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
 
-        servant = ObservableI(properties)
+        servant = MotionSensorI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("motion-sensor"))
 
         monitor = Observer()
-        monitor.schedule(EventHandler(servant), str(properties.getProperty('MotionSensor.MonitoredDirectory')))
-        monitor.start()
+        monitoredDirectory = str(properties.getProperty('MotionSensor.MonitoredDirectory'))
+        monitor.schedule(EventHandler(servant), monitoredDirectory)
+        try:
+            monitor.start()
+        except OSError:
+            logging.error("MonitoredDirectory property is not a directory")
+            return 1
 
         proxy = citisim.remove_private_endpoints(proxy)
         logging.info("Server ready:\n'{}'".format(proxy))

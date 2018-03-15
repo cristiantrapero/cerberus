@@ -129,7 +129,7 @@
                <property name="Ice.StdErr" value="/tmp/cerberus/icebox.err"/>
                <property name="Icebox.PrintServicesReady" value="IceStorm"/>
             </properties>
-            <service name="IceStorm" entry="IceStormService:createIceStorm">
+            <service name="IceStorm" entry="IceStormService,36:createIceStorm">
                <properties>
                   <property name="Ice.StdOut" value="/tmp/cerberus/icestorm.out"/>
                   <property name="Ice.StdErr" value="/tmp/cerberus/icestorm.err"/>
@@ -153,7 +153,7 @@
                <object identity="motion-sensor"/>
             </adapter>
          </server>
-         <server id="PersonRecognizer" activation="always" exe="python" pwd="./services/dummy_person_recognizer">
+         <server id="PersonRecognizer" activation="always" exe="python3" pwd="./services/dummy_person_recognizer">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/person_recognizer.err"/>
@@ -183,7 +183,7 @@
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SnapshotService" activation="always" exe="python" pwd="./services/dummy_snapshot_service">
+         <server id="SnapshotService" activation="always" exe="python3" pwd="./services/dummy_snapshot_service">
             <option>server.py</option>
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/snapshot_service.err"/>

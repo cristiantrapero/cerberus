@@ -1,4 +1,4 @@
-#!/usr/bin/python2 -u
+#!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 import sys
 import logging
@@ -21,7 +21,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         if not self.observer:
             logging.error("observer not set to person recognizer")
             return
-        
+
         self.metadata = metadata
 
         # Decode the message to get the snapshot

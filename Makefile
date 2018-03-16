@@ -68,6 +68,8 @@ run-test-wiring-service:
 
 restart: clean grid-start app-add
 
+install-dependencies:
+	bash -c "./install-dependencies.sh"
 
 /tmp/cerberus/%:
 	mkdir -p $@

@@ -20,11 +20,11 @@ logging.getLogger().setLevel(logging.DEBUG)
 CONFIG_FILE = 'server.config'
 
 
-class EventHandler(PatternMatchingEventHandler):
+class Handler(PatternMatchingEventHandler):
     patterns = ["*.jpg", "*.png"]
 
     def __init__(self, servant):
-        super(EventHandler, self).__init__(ignore_patterns=["*.png~"])
+        super(Handler, self).__init__(ignore_patterns=["*.png~"])
         self.servant = servant
 
     def on_created(self, event):
@@ -78,9 +78,11 @@ class Server(Ice.Application):
         servant = MotionSensorI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("motion-sensor"))
 
+        # Matches given patterns with file paths associated with occurring events.
         monitor = Observer()
         monitoredDirectory = str(properties.getProperty('MotionSensor.MonitoredDirectory'))
-        monitor.schedule(EventHandler(servant), monitoredDirectory)
+        monitor.schedule(Handler(servant), monitoredDirectory)
+        
         try:
             monitor.start()
         except OSError:

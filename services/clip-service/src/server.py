@@ -18,13 +18,13 @@ logging.getLogger().setLevel(logging.DEBUG)
 CONFIG_FILE = 'src/server.config'
 
 
-class ClipService(citisim.ObservableMixin, SmartObject.ClipService):
+class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
     observer_cast = SmartObject.DataSinkPrx
 
     def __init__(self, properties):
         self.metadata = None
-        self.recordTime = properties.getProperty('ClipService.RecordTime')
-        self.place = properties.getProperty('ClipService.Place')
+        self.recordTime = int(properties.getProperty('ClipService.RecordTime'))
+        self.place = str(properties.getProperty('ClipService.Place'))
         super(self.__class__, self).__init__()
 
     def notify(self, source, data, current=None):
@@ -43,7 +43,7 @@ class ClipService(citisim.ObservableMixin, SmartObject.ClipService):
         # plughw is the sound card interface
         process = subprocess.Popen(['arecord -D plughw:0 --duration=%s -f cd /tmp/record.wav' % recordTime],
                                     shell = True, stdout=subprocess.PIPE)
-                                    
+
         output, error = process.communicate()
 
         rate, samples = scipy.io.wavfile.read('/tmp/record.wav')
@@ -65,7 +65,7 @@ class Server(Ice.Application):
             properties.setProperty('Ice.Config', CONFIG_FILE)
             adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
 
-        servant = ClipService(properties)
+        servant = ClipServiceI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("clip-service"))
 
         proxy = citisim.remove_private_endpoints(proxy)

@@ -20,13 +20,14 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 CONFIG_FILE="src/server.config"
 
+
 class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
     def __init__(self, properties):
         self.metadata = None
-        self.IBMusername = properties.getProperty("SpeechToText.IBMusername")
-        self.IBMpassword = properties.getProperty("SpeechToText.IBMpassword")
+        self.IBMusername = str(properties.getProperty("SpeechToText.IBMusername"))
+        self.IBMpassword = str(properties.getProperty("SpeechToText.IBMpassword"))
         super(self.__class__, self).__init__()
 
     def notify(self, data, source, metadata, current=None):
@@ -35,14 +36,15 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
             return
 
         self.metadata = metadata
-        command = self.speechToText(data)
-        self.observer.notifyCommand(str(command), self.metadata)
+        transcription = self.speechToText(data)
+        self.observer.notifyCommand(str(transcription), self.metadata)
+        print("message '{}' sent".format(transcription))
 
     def speechToText(self, data):
         # Credentials IBM service
         speech_to_text = SpeechToTextV1(
-            username = str(self.IBMusername),
-            password = str(self.IBMpassword),
+            username = self.IBMusername,
+            password = self.IBMpassword,
             x_watson_learning_opt_out = False
         )
 
@@ -59,7 +61,6 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
                 audio_file, model = 'es-ES_BroadbandModel', content_type = 'audio/wav',
                 word_confidence = True),
                 indent = 2)
-            loggin.info(response)
 
             response_data = json.loads(response)
 
@@ -69,7 +70,8 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
                 transcript = (response_data["results"][0]["alternatives"][0]["transcript"]).encode('utf-8')
             except:
                 logging.error("Speech not detected")
-
+                return
+                
             command = transcript.rstrip()
 
         return command

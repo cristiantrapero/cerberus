@@ -35,12 +35,27 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
         self.checkAuthorization()
 
     def checkAuthorization(self, current=None):
-        if self.personID in self.person_authorized:
-            if any(x in self.command for x in self.command_authorized):
-                if self.metadata_personID.place == self.metadata_command.place:
-                    self.observer.begin_notify(self.metadata_personID.place, self.metadata_personID)
-        else:
-            logging.info("No authorized person")
+        if not self.observer:
+            logging.error("observer not set to authenticator service")
+            return
+
+        # If we have a command and a person identification
+        if self.command is not None and self.personID is not None:
+            if self.personID in self.person_authorized:
+                if any(x in self.command for x in self.command_authorized):
+                    placeCommand = self.metadata_command.get(MetadataField.Place)
+                    placePersonID = self.metadata_personID.get(MetadataField.Place)
+
+                    # Events generated in the same place
+                    if placeCommand == placePersonID:
+                        self.observer.begin_notify(placeCommand, self.metadata_personID)
+                        print("{} authorized to {}".format(self.personID, self.command))
+
+                        # Clean
+                        self.command = None
+                        self.personID = None
+            else:
+                loggin.info("{} is not authorized person".format(self.personID))
 
 class Server(Ice.Application):
     def run(self, argv):

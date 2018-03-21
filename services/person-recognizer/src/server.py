@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 import sys
 import logging
+import numpy as np
 import openface
 import pickle
-import numpy as np
 import cv2
 import Ice
 
@@ -25,11 +25,11 @@ stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.DEBUG)
 
+# Use the classifier of celebrities as example
+CLASSIFIER_MODEL = './models/openface/celeb-classifier.nn4.small2.v1.pkl'
 MODEL_PREDICTIONFACE = './models/dlib/shape_predictor_68_face_landmarks.dat'
 MODEL_TORCH = './models/openface/nn4.small2.v1.t7'
 
-# Use the classifier of celebrities as example
-CLASSIFIER_MODEL = './models/celeb-classifier.nn4.small2.v1.pkl'
 
 class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
@@ -51,7 +51,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         # Get the id of the person
         person_id = self.recognize_person(snapshot)
 
-        self.observer.notifyPerson(self.metadata, person_id)
+        self.observer.begin_notifyPerson(self.metadata, person_id)
         logging.info("identified person as {}".format(personID))
 
     def recognize_person(self, data ,current=None):

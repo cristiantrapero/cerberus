@@ -1,5 +1,21 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8; mode: python; tab-width:4 -*-
+import sys
+import os
+if __name__ == '__main__' and __package__ is None:
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../scheduler')))
+
+import scheduler
+import Ice
+from unittest import TestCase
+from doublex import (
+    assert_that, called, method_returning, method_raising, Mimic, Spy
+)
+
+class SchedulerTests(TestCase):
+    def test_get_existing_service(self):
+        return 0
+
 
 # get plan for existing service:    event "recorded audio"
 # get plan for trivial composition: event "voice command"

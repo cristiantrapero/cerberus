@@ -15,8 +15,7 @@ class Client(Ice.Application):
         self.scone = self.get_scone(args[1])
         self.wiring_service = self.get_wiring_service(args[2])
         self.compose("open door")
-        print("Done.")
-
+        
     def compose(self, event):
         plan = self.make_schedule(event)
         self.build_plan(plan)
@@ -115,11 +114,6 @@ class Client(Ice.Application):
         print("connect '{}' -> '{}'".format(observable, observer))
 
         self.wiring_service.addObserver(observable, observer)
-
-        # ic = self.communicator()
-        # observable = ic.stringToProxy(observable)
-        # observable = SmartObject.ObservablePrx.checkedCast(observable)
-        # observable.setObserver(observer)
 
 
 sys.exit(Client().main(sys.argv))

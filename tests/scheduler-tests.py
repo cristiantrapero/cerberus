@@ -2,19 +2,36 @@
 # -*- coding: utf-8; mode: python; tab-width:4 -*-
 import sys
 import os
-if __name__ == '__main__' and __package__ is None:
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../scheduler')))
 
-import scheduler
 import Ice
 from unittest import TestCase
-from doublex import (
-    assert_that, called, method_returning, method_raising, Mimic, Spy
-)
+
+import scheduler
 
 class SchedulerTests(TestCase):
-    def test_get_existing_service(self):
-        return 0
+    def setUp(self):
+        props = Ice.createProperties([])
+        props.setProperty('Ice.Default.Locator',
+                          'IceGrid/Locator -t:tcp -h 127.0.0.1 -p 4061')
+        init_data = Ice.InitializationData()
+        init_data.properties = props
+        ic = Ice.initialize(init_data)
+        
+        self.sut = scheduler.Scheduler(ic)
+
+    def test_get_action(self):
+        result = self.sut.get_action_for_event('motion detected')
+        self.assertEquals(result, '{detect_motion}')
+        
+    def test_motion_detected(self):
+        result = self.sut.make_schedule('motion detected')
+        self.assertEquals(result, ['motion-sensor'])
+
+    def test_motion_detected(self):
+        result = self.sut.make_schedule('scene snapshoted')
+        self.assertEquals(result, ['motion-sensor', 'snapshot-service'])
+
+
 
 
 # get plan for existing service:    event "recorded audio"

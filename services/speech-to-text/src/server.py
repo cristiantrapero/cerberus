@@ -36,16 +36,16 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
             return
 
         self.metadata = metadata
-        transcription = self.speechToText(data)
-        self.observer.notifyCommand(str(transcription), self.metadata)
+        transcription = self.transcribeAudio(data)
+        self.observer.notifyCommand(transcription, self.metadata)
         print("message '{}' sent".format(transcription))
 
-    def speechToText(self, data):
+    def transcribeAudio(self, data):
         # Credentials IBM service
         speech_to_text = SpeechToTextV1(
             username = self.IBMusername,
             password = self.IBMpassword,
-            x_watson_learning_opt_out = False
+            url = 'https://stream.watsonplatform.net/speech-to-text/api'
         )
 
         audio = np.fromstring(data, np.int16)
@@ -70,9 +70,8 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
                 transcript = (response_data["results"][0]["alternatives"][0]["transcript"]).encode('utf-8')
             except:
                 logging.error("Speech not detected")
-                return
-                
-            command = transcript.rstrip()
+
+            command = str(transcript.rstrip())
 
         return command
 

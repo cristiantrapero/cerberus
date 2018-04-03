@@ -17,7 +17,7 @@ stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.DEBUG)
 
-CONFIG_FILE = 'server.config'
+CONFIG_FILE = 'src/server.config'
 
 
 class Handler(PatternMatchingEventHandler):
@@ -61,7 +61,8 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
             place = self.place).to_dict()
 
         self.observer.begin_notify(self.place, data)
-        print('motion detected on {}'.format(self.place))
+        logging.info('motion detected on {}'.format(self.place))
+
 
 class Server(Ice.Application):
     def run(self, args):
@@ -82,11 +83,11 @@ class Server(Ice.Application):
         monitor = Observer()
         monitoredDirectory = str(properties.getProperty('MotionSensor.MonitoredDirectory'))
         monitor.schedule(Handler(servant), monitoredDirectory)
-        
+
         try:
             monitor.start()
         except OSError:
-            logging.error("MonitoredDirectory property is not a directory")
+            logging.error("MonitoredDirectory property is not a directory.")
             return 1
 
         proxy = citisim.remove_private_endpoints(proxy)

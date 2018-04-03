@@ -48,7 +48,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
             out, buf = cv2.imencode('.jpg', fd)
 
             self.observer.begin_notify(buf, self.place, self.metadata, buf)
-            print("snapshot taken")
+            logging.info("snapshot taken")
 
             time.sleep(delay)
 

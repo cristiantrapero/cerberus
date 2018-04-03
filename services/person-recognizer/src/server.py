@@ -88,10 +88,10 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         person_id = person.decode('utf-8')
 
         if confidence > 0.60:
-            logging.info("Identified person: {} with {} confidence".format(person_id, confidence))
+            logging.info("Identified person: {} with {} confidence.".format(person_id, confidence))
             return person_id
         else:
-            logging.info("Identified unknown: {} with {} confidence".format(person_id, confidence))
+            logging.info("Unknown person. Estimated: {} with {} confidence.".format(person_id, confidence))
             person_id = "unknown"
             return person_id
 

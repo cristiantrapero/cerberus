@@ -118,7 +118,7 @@
                <property name="Ice.StdErr" value="/tmp/cerberus/icebox.err"/>
                <property name="Icebox.PrintServicesReady" value="IceStorm"/>
             </properties>
-            <service name="IceStorm" entry="IceStormService:createIceStorm">
+            <service name="IceStorm" entry="IceStormService,36:createIceStorm">
                <properties>
                   <property name="Ice.StdOut" value="/tmp/cerberus/icestorm.out"/>
                   <property name="Ice.StdErr" value="/tmp/cerberus/icestorm.err"/>

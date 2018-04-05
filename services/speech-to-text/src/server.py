@@ -6,7 +6,6 @@ import Ice
 import logging
 import scipy.io.wavfile
 import numpy as np
-from struct import *
 from os.path import join, dirname
 from watson_developer_cloud import SpeechToTextV1
 
@@ -18,7 +17,7 @@ stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.DEBUG)
 
-CONFIG_FILE="src/server.config"
+CONFIG_FILE = "src/server.config"
 
 
 class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
@@ -43,9 +42,9 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
     def transcribeAudio(self, data):
         # Credentials IBM service
         speech_to_text = SpeechToTextV1(
-            username = self.IBMusername,
-            password = self.IBMpassword,
-            url = 'https://stream.watsonplatform.net/speech-to-text/api'
+            username=self.IBMusername,
+            password=self.IBMpassword,
+            url='https://stream.watsonplatform.net/speech-to-text/api'
         )
 
         audio = np.fromstring(data, np.int16)
@@ -56,11 +55,11 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         # Write the audio data to send after
         scipy.io.wavfile.write('/tmp/command.wav', 44100, audio)
 
-        with open(join(dirname(__file__), '/tmp/command.wav'),'rb') as audio_file:
+        with open(join(dirname(__file__), '/tmp/command.wav'), 'rb') as audio_file:
             response = json.dumps(speech_to_text.recognize(
-                audio_file, model = 'es-ES_BroadbandModel', content_type = 'audio/wav',
-                word_confidence = True),
-                indent = 2)
+                audio_file, model = 'es-ES_BroadbandModel', content_type='audio/wav',
+                word_confidence=True),
+                indent=2)
 
             response_data = json.loads(response)
 

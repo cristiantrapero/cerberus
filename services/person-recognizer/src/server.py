@@ -11,19 +11,12 @@ import Ice
 import libcitisim as citisim
 from libcitisim import SmartObject
 
-from sklearn.pipeline import Pipeline
-from sklearn.lda import LDA
-from sklearn.preprocessing import LabelEncoder
-from sklearn.svm import SVC
-from sklearn.grid_search import GridSearchCV
-from sklearn.mixture import GMM
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.naive_bayes import GaussianNB
-
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.DEBUG)
+
+CONFIG_FILE = 'src/server.config'
 
 # Use the classifier of celebrities as example
 CLASSIFIER_MODEL = './models/openface/celeb-classifier.nn4.small2.v1.pkl'
@@ -52,9 +45,9 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         person_id = self.recognize_person(snapshot)
 
         self.observer.begin_notifyPerson(self.metadata, person_id)
-        logging.info("identified person as {}".format(personID))
+        logging.info("identified person as {}".format(person_id))
 
-    def recognize_person(self, data ,current=None):
+    def recognize_person(self, data, current=None):
         with open(CLASSIFIER_MODEL, 'rb') as f:
             if sys.version_info[0] < 3:
                 (le, clf) = pickle.load(f)
@@ -99,7 +92,8 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
-
+        properties = broker.getProperties()
+        
         try:
             adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
         except Ice.InitializationException:

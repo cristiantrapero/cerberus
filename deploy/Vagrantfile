@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "cerberus" do |minion|
+    minion.vm.box = "debian/stretch64"
+    minion.vm.hostname = 'cerberus'
+    minion.vm.box_url = "debian/stretch64"
+    minion.vm.boot_timeout = 300
+
+    minion.vm.network :private_network, ip: "192.168.1.100"
+
+    minion.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      vb.customize ["modifyvm", :id, "--memory", 1024]
+      vb.customize ["modifyvm", :id, "--name", "cerberus"]
+    end
+
+    minion.vm.synced_folder "saltstack/salt/", "/srv/salt/", 
+      owner:"vagrant", 
+      group:"vagrant",
+      mount_options: ["dmode=775,fmode=664"],
+      type: ""
+
+    minion.vm.provision :salt do |salt|
+      salt.colorize = true
+      salt.masterless = true
+      salt.minion_id = "cerberus"
+      salt.install_type = "stable"
+      salt.minion_config = "saltstack/etc/minion"
+      salt.run_highstate = true
+
+    end
+  end
+
+end

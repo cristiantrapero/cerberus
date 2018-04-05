@@ -3,15 +3,18 @@
 import sys
 import Ice
 import logging
-#import apiai
 
 import libcitisim as citisim
 from libcitisim import SmartObject
+from libcitisim import MetadataField
 
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.DEBUG)
+
+CONFIG_FILE = "src/server.config"
+
 
 class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
     observer_cast = SmartObject.EventSinkPrx
@@ -44,8 +47,6 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
         if self.command is not None and self.personID is not None:
             if self.personID in self.person_authorized:
 
-                # We can to check the command intention with dialogflow.com
-                # self.getIntention(self.command)
                 if any(x in self.command for x in self.command_authorized):
                     placeCommand = self.metadata_command.get(MetadataField.Place)
                     placePersonID = self.metadata_personID.get(MetadataField.Place)
@@ -59,20 +60,13 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
                         self.command = None
                         self.personID = None
             else:
-                loggin.info("{} is not authorized person".format(self.personID))
-
-    # def getIntention(self, command, current=None):
-    #     ai = apiai.ApiAI('58bf10f9405f4bef975c0ae389e676d3')
-    #     request = ai.text_request()
-    #     request.lang = 'es'
-    #     request.query = command
-    #     response = request.getresponse()
-    #     print(response)
+                logging.info("{} is not authorized person".format(self.personID))
 
 
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
+        properties = broker.getProperties()
 
         try:
             adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")

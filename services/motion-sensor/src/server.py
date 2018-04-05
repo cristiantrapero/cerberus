@@ -7,7 +7,6 @@ import Ice
 
 import libcitisim as citisim
 from libcitisim import SmartObject
-from SmartObject import MetadataField
 
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
@@ -52,13 +51,13 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
             return
 
         data = citisim.MetadataHelper(
-            timestamp = time.time(),
-            quality = self.quality,
-            expiration = self.expiration,
-            latitude = self.latitude,
-            longitude = self.longitude,
-            altitude = self.altitude,
-            place = self.place).to_dict()
+            timestamp=time.time(),
+            quality=self.quality,
+            expiration=self.expiration,
+            latitude=self.latitude,
+            longitude=self.longitude,
+            altitude=self.altitude,
+            place=self.place).to_dict()
 
         self.observer.begin_notify(self.place, data)
         logging.info('motion detected on {}'.format(self.place))

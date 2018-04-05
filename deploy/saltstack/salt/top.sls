@@ -1,0 +1,3 @@
+base:
+  'cerberus':
+    - cerberus-dependencies

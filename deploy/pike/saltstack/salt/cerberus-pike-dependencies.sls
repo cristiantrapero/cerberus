@@ -13,19 +13,25 @@ arco-packages:
       - scone
       - scone-wrapper
       - dharma
+      - property-service-simple
       - citisim-wiring-service
     - refresh: True
     - reload: True
-    - pkgrepo: pike-repo
+    - pkgrepo: pike-repository
 
 pip3-dependencies:
   pip.installed:
     - pkgs:
-      - opencv-python
       - watson-developer-cloud
-      - watchdog
       - service-identity
       - dlib
+      - numpy >= 1.1, < 2.0
+      - scipy >= 0.13, < 0.17
+      - pandas >= 0.13, < 0.18
+      - scikit-learn >= 0.17, < 0.18
+      - nose >= 1.3.1, < 1.4
+      - nolearn == 0.5b1
+      - opencv-python
     - bin_env: '/usr/bin/pip3'
     - require:
       - pkg: python-packages
@@ -36,16 +42,10 @@ openface-repository:
     - target: /tmp/openface
     - force_checkout: True
 
-install-openface-pip-dependencies:
-  cmd.run:
-    - name: pip3 install -r /tmp/openface/requirements.txt
-    - require:
-      - pkg: python-packages
-      - git: openface-repository
-
-install-openface:
+install-openface-python-module:
   cmd.run:
     - name: python3 setup.py install
+    - cwd: /tmp/openface/
     - require:
       - pkg: python-packages
       - git: openface-repository

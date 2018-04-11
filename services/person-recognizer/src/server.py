@@ -4,7 +4,6 @@ import sys
 import logging
 import numpy as np
 import openface
-import pickle
 import cv2
 import Ice
 
@@ -93,7 +92,7 @@ class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
         properties = broker.getProperties()
-        
+
         try:
             adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
         except Ice.InitializationException:

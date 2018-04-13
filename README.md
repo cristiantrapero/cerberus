@@ -6,8 +6,13 @@ The repository is structured as follows:
  - **devices**: Embedded services in devices with its corresponding PlatformIO projects.
  - **scone-knowledge.d**: Scone knowledge for the plugable services.
  - **config**: Icegrid applications and config files.
- - **test**: Unitary tests for Scone knowledge.
+ - **tests**: Unitary tests for Scone knowledge.
  - **install-dependencies.sh**: Bash script to install the services dependencies.
+ - **scheduler**: Scheduler for setObservers
+ - **deploy**: Vagran, Saltstack and config files to deploy cerberus in the smart office.
+ - **utils**: Util services.
+ - **Makefile**: To run cerberus dummy application.
+
 
 
 |      Services     | dummy | real | debian package |

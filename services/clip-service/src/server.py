@@ -5,6 +5,8 @@ import logging
 import subprocess
 import scipy.io.wavfile
 import numpy as np
+import RPi as GPIO
+import time
 import Ice
 
 import libcitisim as citisim
@@ -17,6 +19,10 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 CONFIG_FILE = 'src/server.config'
 
+# RPI GPIO Buzzer configuration to sound when record audio
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(22,GPIO.OUT)
 
 class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
     observer_cast = SmartObject.DataSinkPrx
@@ -40,17 +46,28 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         self.observer.begin_notify(record, self.place, self.metadata)
 
     def capture_audio(self, recordTime, current=None):
+        self.buzzer()
         # plughw is the sound card interface
         process = subprocess.Popen(['arecord -D plughw:0 --duration=%s -f cd /tmp/record.wav' % recordTime],
                                     shell=True, stdout=subprocess.PIPE)
 
         output, error = process.communicate()
+        self.buzzer()
 
         rate, samples = scipy.io.wavfile.read('/tmp/record.wav')
 
         # Convert audio as numpy array
         audio = np.asarray(samples, dtype=np.int16)
         return audio
+
+    def buzzer(self, current=None):
+        GPIO.output(22, GPIO.HIGH)
+        time.sleep(0.1)
+        GPIO.output(22, GPIO.LOW)
+        time.sleep(0.1)
+        GPIO.output(22, GPIO.HIGH)
+        time.sleep(0.1)
+        GPIO.output(22, GPIO.LOW)
 
 
 class Server(Ice.Application):

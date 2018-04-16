@@ -1,8 +1,0 @@
-## Look locally for files
-file_client: local
-
-## Where your salt states & files are located
-file_roots:
-  base:
-    - /srv/salt/
-

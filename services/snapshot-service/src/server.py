@@ -5,6 +5,7 @@ import time
 import logging
 import cv2
 import urllib
+import RPi as GPIO
 import Ice
 
 import libcitisim as citisim
@@ -17,6 +18,10 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 CONFIG_FILE = 'src/server.config'
 
+# RPI GPIO Buzzer configuration to sound when record audio
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(22,GPIO.OUT)
 
 class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
     observer_cast = SmartObject.DataSinkPrx
@@ -53,8 +58,14 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
             time.sleep(delay)
 
     def take_snapshot(self, current=None):
+        self.buzzer()
         url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.CameraUser, self.cameraPass)
         urllib.urlretrieve(url_snapshot, "/tmp/snapshot.jpg")
+
+    def buzzer(self, current=None):
+        GPIO.output(22, GPIO.HIGH)
+        time.sleep(0.3)
+        GPIO.output(22, GPIO.LOW)
 
 
 class Server(Ice.Application):

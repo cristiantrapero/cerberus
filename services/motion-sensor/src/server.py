@@ -14,9 +14,7 @@ from watchdog.events import PatternMatchingEventHandler
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
-logging.getLogger().setLevel(logging.DEBUG)
-
-CONFIG_FILE = 'src/server.config'
+logging.getLogger().setLevel(logging.INFO)
 
 
 class Handler(PatternMatchingEventHandler):
@@ -37,13 +35,25 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
     observer_cast = SmartObject.EventSinkPrx
 
     def __init__(self, properties):
-        self.quality = int(properties.getProperty('MotionSensor.Quality'))
-        self.expiration = int(properties.getProperty('MotionSensor.Expiration'))
-        self.latitude = float(properties.getProperty('MotionSensor.Latitude'))
-        self.longitude = float(properties.getProperty('MotionSensor.Longitude'))
-        self.altitude = float(properties.getProperty('MotionSensor.Altitude'))
-        self.place = str(properties.getProperty('MotionSensor.Place'))
+        self.properties = properties
+        self.quality = int(self.get_property('MotionSensor.Quality'))
+        self.expiration = int(self.get_property('MotionSensor.Expiration'))
+        self.latitude = float(self.get_property('MotionSensor.Latitude'))
+        self.longitude = float(self.get_property('MotionSensor.Longitude'))
+        self.altitude = float(self.get_property('MotionSensor.Altitude'))
+        self.place = str(self.get_property('MotionSensor.Place'))
         super(self.__class__, self).__init__()
+
+    def get_property(self, key, default=None):
+        retval = self.properties.getProperty(key)
+        if retval is "":
+            logging.info("Warning: property '{}' not set!".format(key))
+            if default is not None:
+                logging.info(" - using default value: {}".format(default))
+                return default
+            else:
+                raise NameError("Ice property '{}' is not set".format(key))
+        return retval
 
     def notify(self, current=None):
         if not self.observer:
@@ -67,13 +77,7 @@ class Server(Ice.Application):
     def run(self, args):
         broker = self.communicator()
         properties = broker.getProperties()
-
-        try:
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        except Ice.InitializationException:
-            logging.info("No config provided, using : '{}'".format(CONFIG_FILE))
-            properties.setProperty('Ice.Config', CONFIG_FILE)
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
 
         servant = MotionSensorI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("motion-sensor"))
@@ -81,12 +85,16 @@ class Server(Ice.Application):
         # Matches given patterns with file paths associated with occurring events.
         monitor = Observer()
         monitoredDirectory = str(properties.getProperty('MotionSensor.MonitoredDirectory'))
+        if monitoredDirectory is "":
+            logging.error("Error: property MonitoredDirectory not set!")
+            return 1
+
         monitor.schedule(Handler(servant), monitoredDirectory)
 
         try:
             monitor.start()
         except OSError:
-            logging.error("MonitoredDirectory property is not a directory.")
+            logging.error("MonitoredDirectory property is not correct directory.")
             return 1
 
         proxy = citisim.remove_private_endpoints(proxy)

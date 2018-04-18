@@ -4,8 +4,7 @@ import sys
 import time
 import logging
 import cv2
-import urllib
-import RPi as GPIO
+import urllib.request
 import Ice
 
 import libcitisim as citisim
@@ -14,27 +13,34 @@ from libcitisim import SmartObject
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
-CONFIG_FILE = 'src/server.config'
-
-# RPI GPIO Buzzer configuration to sound when record audio
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(22,GPIO.OUT)
 
 class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
     observer_cast = SmartObject.DataSinkPrx
 
     def __init__(self, properties):
         self.metadata = None
-        self.snapshots = int(properties.getProperty('SnapshotService.Snapshots'))
-        self.delay = int(properties.getProperty('SnapshotService.Delay'))
-        self.place = str(properties.getProperty('SnapshotService.Place'))
-        self.cameraIP = str(properties.getProperty('SnapshotService.CameraIP'))
-        self.cameraUser = str(properties.getProperty('SnapshotService.CameraUser'))
-        self.cameraPass = str(properties.getProperty('SnapshotService.CameraPass'))
+        self.properties = properties
+        self.snapshots = int(self.get_property('SnapshotService.Snapshots'))
+        self.delay = int(self.get_property('SnapshotService.Delay'))
+        self.place = str(self.get_property('SnapshotService.Place'))
+        self.cameraIP = str(self.get_property('SnapshotService.CameraIP'))
+        self.cameraUser = str(self.get_property('SnapshotService.CameraUser'))
+        self.cameraPass = str(self.get_property('SnapshotService.CameraPass'))
+        self.directory = str(self.get_property('SnapshotService.Directory'))
         super(self.__class__, self).__init__()
+
+    def get_property(self, key, default=None):
+        retval = self.properties.getProperty(key)
+        if retval is "":
+            logging.info("Warning: property '{}' not set!".format(key))
+            if default is not None:
+                logging.info(" - using default value: {}".format(default))
+                return default
+            else:
+                raise NameError("Ice property '{}' is not set".format(key))
+        return retval
 
     def notify(self, source, metadata, current=None):
         self.metadata = metadata
@@ -52,33 +58,21 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
             # Encode image to send as message
             out, buf = cv2.imencode('.jpg', fd)
 
-            self.observer.begin_notify(buf, self.place, self.metadata, buf)
+            self.observer.begin_notify(buf, self.place, self.metadata)
             logging.info("snapshot taken")
 
             time.sleep(delay)
 
     def take_snapshot(self, current=None):
-        self.buzzer()
-        url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.CameraUser, self.cameraPass)
-        urllib.urlretrieve(url_snapshot, "/tmp/snapshot.jpg")
-
-    def buzzer(self, current=None):
-        GPIO.output(22, GPIO.HIGH)
-        time.sleep(0.3)
-        GPIO.output(22, GPIO.LOW)
+        url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.cameraUser, self.cameraPass)
+        urllib.request.urlretrieve(url_snapshot, "{}snapshot.jpg".format(self.directory))
 
 
 class Server(Ice.Application):
     def run(self, args):
         broker = self.communicator()
         properties = broker.getProperties()
-
-        try:
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        except Ice.InitializationException:
-            logging.info("No config provided, using : '{}'".format(CONFIG_FILE))
-            properties.setProperty('Ice.Config', CONFIG_FILE)
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
 
         servant = SnapshotServiceI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("snapshot-service"))

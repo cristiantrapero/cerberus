@@ -1,7 +1,7 @@
 Source: clip-service
 Section: python3
 Priority: extra
-Maintainer: Cristian Trapero Mora <critramo@gmail.com>
+Maintainer: Cristian Trapero Mora <cristian.trapero@uclm.es>
 Build-Depends: debhelper (>= 7.0.50~), quilt
 Standards-Version: 3.9.8
 Homepage: https://bitbucket.org/arco_group/cerberus
@@ -14,6 +14,7 @@ Depends:
  python3-zeroc-ice,
  citisim-slice,
  libcitisim,
- python3-scipy
+ python-scipy,
+ libatlas-base-dev
 Description: Cerberus Clip Service
  This service record an audio file from the audio interface in a Raspberry Pi.

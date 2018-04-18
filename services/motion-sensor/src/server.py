@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
+import os
 import logging
 import Ice
 
@@ -84,12 +85,15 @@ class Server(Ice.Application):
 
         # Matches given patterns with file paths associated with occurring events.
         monitor = Observer()
-        monitoredDirectory = str(properties.getProperty('MotionSensor.MonitoredDirectory'))
-        if monitoredDirectory is "":
+        directory = str(properties.getProperty('MotionSensor.MonitoredDirectory'))
+
+        if directory is "":
             logging.error("Error: property MonitoredDirectory not set!")
             return 1
 
-        monitor.schedule(Handler(servant), monitoredDirectory)
+        directory = os.path.abspath(directory)
+
+        monitor.schedule(Handler(servant), directory)
 
         try:
             monitor.start()

@@ -1,13 +1,13 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 import sys
-import json
-import Ice
 import logging
+import json
 import scipy.io.wavfile
 import numpy as np
 from os.path import join, dirname
 from watson_developer_cloud import SpeechToTextV1
+import Ice
 
 import libcitisim as citisim
 from libcitisim import SmartObject
@@ -15,9 +15,7 @@ from libcitisim import SmartObject
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
-logging.getLogger().setLevel(logging.DEBUG)
-
-CONFIG_FILE = "src/server.config"
+logging.getLogger().setLevel(logging.INFO)
 
 
 class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
@@ -25,9 +23,21 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
 
     def __init__(self, properties):
         self.metadata = None
-        self.IBMusername = str(properties.getProperty("SpeechToText.IBMusername"))
-        self.IBMpassword = str(properties.getProperty("SpeechToText.IBMpassword"))
+        self.properties = properties
+        self.IBMusername = str(self.get_property("SpeechToText.IBMusername"))
+        self.IBMpassword = str(self.get_property("SpeechToText.IBMpassword"))
         super(self.__class__, self).__init__()
+
+    def get_property(self, key, default=None):
+        retval = self.properties.getProperty(key)
+        if retval is "":
+            logging.info("Warning: property '{}' not set!".format(key))
+            if default is not None:
+                logging.info(" - using default value: {}".format(default))
+                return default
+            else:
+                raise NameError("Ice property '{}' is not set".format(key))
+        return retval
 
     def notify(self, data, source, metadata, current=None):
         if not self.observer:
@@ -39,7 +49,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         self.observer.notifyCommand(transcription, self.metadata)
         print("message '{}' sent".format(transcription))
 
-    def transcribeAudio(self, data):
+    def transcribe_audio(self, data):
         # Credentials IBM service
         speech_to_text = SpeechToTextV1(
             username=self.IBMusername,
@@ -57,7 +67,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
 
         with open(join(dirname(__file__), '/tmp/command.wav'), 'rb') as audio_file:
             response = json.dumps(speech_to_text.recognize(
-                audio_file, model = 'es-ES_BroadbandModel', content_type='audio/wav',
+                audio_file, model='es-ES_BroadbandModel', content_type='audio/wav',
                 word_confidence=True),
                 indent=2)
 
@@ -79,13 +89,7 @@ class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
         properties = broker.getProperties()
-
-        try:
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        except Ice.InitializationException:
-            logging.info("No config provided, using : '{}'".format(CONFIG_FILE))
-            properties.setProperty('Ice.Config', CONFIG_FILE)
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
 
         servant = SpeechToTextI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("speech-to-text"))

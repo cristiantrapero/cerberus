@@ -5,8 +5,8 @@ import logging
 import subprocess
 import scipy.io.wavfile
 import numpy as np
-import RPi as GPIO
 import time
+import os
 import Ice
 
 import libcitisim as citisim
@@ -15,72 +15,67 @@ from libcitisim import SmartObject
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
-CONFIG_FILE = 'src/server.config'
-
-# RPI GPIO Buzzer configuration to sound when record audio
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(22,GPIO.OUT)
 
 class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
     observer_cast = SmartObject.DataSinkPrx
 
     def __init__(self, properties):
         self.metadata = None
-        self.recordTime = int(properties.getProperty('ClipService.RecordTime'))
-        self.place = str(properties.getProperty('ClipService.Place'))
+        self.properties = properties
+        self.seconds = int(self.get_property('ClipService.Seconds'))
+        self.place = str(self.get_property('ClipService.Place'))
+        self.directory = str(self.get_property('ClipService.Directory'))
         super(self.__class__, self).__init__()
+
+    def get_property(self, key, default=None):
+        retval = self.properties.getProperty(key)
+        if retval is "":
+            logging.info("Warning: property '{}' not set!".format(key))
+            if default is not None:
+                logging.info(" - using default value: {}".format(default))
+                return default
+            else:
+                raise NameError("Ice property '{}' is not set".format(key))
+        return retval
 
     def notify(self, source, data, current=None):
         self.metadata = data
-        self.trigger(self.recordTime)
+        self.trigger(self.seconds)
 
-    def trigger(self, recordTime, current=None):
+    def trigger(self, seconds, current=None):
         if not self.observer:
             logging.error("observer not set")
             return
 
-        record = self.captureAudio(recordTime)
-        self.observer.begin_notify(record, self.place, self.metadata)
+        recording = self.capture_audio(seconds)
+        self.observer.begin_notify(recording, self.place, self.metadata)
 
-    def capture_audio(self, recordTime, current=None):
-        self.buzzer()
+    def capture_audio(self, seconds, current=None):
         # plughw is the sound card interface
-        process = subprocess.Popen(['arecord -D plughw:0 --duration=%s -f cd /tmp/record.wav' % recordTime],
-                                    shell=True, stdout=subprocess.PIPE)
+        self.ring_buzzer()
+        subprocess.call(["arecord", "-D", "plughw:0", "--duration", str(seconds), "-f", "cd", "{}prueba.wav".format(self.directory)])
+        self.ring_buzzer()
 
-        output, error = process.communicate()
-        self.buzzer()
-
-        rate, samples = scipy.io.wavfile.read('/tmp/record.wav')
+        rate, samples = scipy.io.wavfile.read('{}record.wav'.format(self.directory))
 
         # Convert audio as numpy array
         audio = np.asarray(samples, dtype=np.int16)
         return audio
 
-    def buzzer(self, current=None):
-        GPIO.output(22, GPIO.HIGH)
-        time.sleep(0.1)
-        GPIO.output(22, GPIO.LOW)
-        time.sleep(0.1)
-        GPIO.output(22, GPIO.HIGH)
-        time.sleep(0.1)
-        GPIO.output(22, GPIO.LOW)
+    def ring_buzzer(self, current=None):
+        if os.uname()[1] == 'cerberus-rpi':
+            subprocess.call(['gpio -g write 22 1'])
+            time.sleep(0.5)
+            subprocess.call(['gpio -g write 22 0'])
 
 
 class Server(Ice.Application):
     def run(self, args):
         broker = self.communicator()
         properties = broker.getProperties()
-
-        try:
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        except Ice.InitializationException:
-            logging.info("No config provided, using : '{}'".format(CONFIG_FILE))
-            properties.setProperty('Ice.Config', CONFIG_FILE)
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
 
         servant = ClipServiceI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("clip-service"))

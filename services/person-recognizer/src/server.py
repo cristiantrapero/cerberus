@@ -4,6 +4,7 @@ import sys
 import logging
 import numpy as np
 import openface
+import pickle
 import cv2
 import Ice
 
@@ -13,22 +14,33 @@ from libcitisim import SmartObject
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
-CONFIG_FILE = 'src/server.config'
 
 # Use the classifier of celebrities as example
-CLASSIFIER_MODEL = './models/openface/celeb-classifier.nn4.small2.v1.pkl'
-MODEL_PREDICTIONFACE = './models/dlib/shape_predictor_68_face_landmarks.dat'
-MODEL_TORCH = './models/openface/nn4.small2.v1.t7'
+MODEL_PREDICTIONFACE = '/usr/lib/person-recognizer/models/dlib/shape_predictor_68_face_landmarks.dat'
+MODEL_TORCH = '/usr/lib/person-recognizer/models/openface/nn4.small2.v1.t7'
 
 
 class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
-    def __init__(self):
+    def __init__(self, properties):
         self.metadata = None
+        self.properties = properties
+        self.classifier_model = str(self.get_property('PersonRecognizer.ClassifierModel'))
         super(self.__class__, self).__init__()
+
+    def get_property(self, key, default=None):
+        retval = self.properties.getProperty(key)
+        if retval is "":
+            logging.info("Warning: property '{}' not set!".format(key))
+            if default is not None:
+                logging.info(" - using default value: {}".format(default))
+                return default
+            else:
+                raise NameError("Ice property '{}' is not set".format(key))
+        return retval
 
     def notify(self, data, source, metadata, current=None):
         if not self.observer:
@@ -42,12 +54,11 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 
         # Get the id of the person
         person_id = self.recognize_person(snapshot)
-
-        self.observer.begin_notifyPerson(self.metadata, person_id)
+        self.observer.begin_notifyPerson(person_id, self.metadata)
         logging.info("identified person as {}".format(person_id))
 
     def recognize_person(self, data, current=None):
-        with open(CLASSIFIER_MODEL, 'rb') as f:
+        with open(self.classifier_model, 'rb') as f:
             if sys.version_info[0] < 3:
                 (le, clf) = pickle.load(f)
             else:
@@ -91,16 +102,10 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
         properties = broker.getProperties()
 
-        try:
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        except Ice.InitializationException:
-            logging.info("No config provided, using : '{}'".format(CONFIG_FILE))
-            properties.setProperty('Ice.Config', CONFIG_FILE)
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-
-        servant = PersonRecognizerI()
+        servant = PersonRecognizerI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("person-recognizer"))
 
         proxy = citisim.remove_private_endpoints(proxy)

@@ -11,7 +11,7 @@ install:
 	install -d $(DESTDIR)/usr/lib/person-recognizer/
 	install -m 644 src/server.py $(DESTDIR)/usr/lib/person-recognizer
 	install -d $(DESTDIR)/usr/lib/person-recognizer/models
-	install -m 644 models/* $(DESTDIR)/usr/lib/person-recognizer/models
+	install -m 644 src/models/get-models.sh $(DESTDIR)/usr/lib/person-recognizer/models
 	install -d $(DESTDIR)/etc/default
 	install -m 644 src/server.config $(DESTDIR)/etc/default/person-recognizer.config
 

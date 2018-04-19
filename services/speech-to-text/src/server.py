@@ -26,6 +26,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         self.properties = properties
         self.IBMusername = str(self.get_property("SpeechToText.IBMusername"))
         self.IBMpassword = str(self.get_property("SpeechToText.IBMpassword"))
+        self.directory = str(self.get_property("SpeechToText.Directory"))
         super(self.__class__, self).__init__()
 
     def get_property(self, key, default=None):

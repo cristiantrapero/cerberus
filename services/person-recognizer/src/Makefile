@@ -1,3 +1,3 @@
 all:
-	./server.py --Ice.Config=server.config
+	python3 server.py --Ice.Config=server.config
 

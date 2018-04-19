@@ -1,6 +1,6 @@
-speech-to-text (0.20171213-1) unstable; urgency=low
+speech-to-text (0.20180419-1) unstable; urgency=low
 
   * Initial release
 
- -- Cristian Trapero Mora <critramo@gmail.com>  Wed, 13 Dec 2017 17:28:47 +0100
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Thu, 19 Apr 2018 11:02:41 +0200
 

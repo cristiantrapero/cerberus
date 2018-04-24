@@ -1,81 +1,110 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
-import sys
+import apiai
+import csv
 import Ice
+import json
 import logging
+import sys
 
 import libcitisim as citisim
-from libcitisim import SmartObject
 from libcitisim import MetadataField
+from libcitisim import SmartObject
 
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logging.getLogger().addHandler(stderrLogger)
-logging.getLogger().setLevel(logging.DEBUG)
-
-CONFIG_FILE = "src/server.config"
+logging.getLogger().setLevel(logging.INFO)
 
 
 class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
     observer_cast = SmartObject.EventSinkPrx
 
-    def __init__(self):
+    def __init__(self, properties):
+        self.properties = properties
         self.metadata_personID = None
         self.metadata_command = None
         self.personID = None
         self.command = None
-        self.person_authorized = ['Cristian', 'SteveCarell']
-        self.command_authorized = ['abrir puerta', 'abrir', 'abreme', 'abrir la puerta', 'abreme la puerta', 'abre la puerta', 'abre']
+        self.database = str(self.get_property('Authenticator.Database'))
+        self.dialogflow_token = str(self.get_property('Authenticator.DialogflowToken'))
+        self.authorized_people = self.get_authorized_people(self.database)
         super(self.__class__, self).__init__()
+
+    def get_property(self, key, default=None):
+        retval = self.properties.getProperty(key)
+        if retval is "":
+            logging.info("Warning: property '{}' not set!".format(key))
+            if default is not None:
+                logging.info(" - using default value: {}".format(default))
+                return default
+            else:
+                raise NameError("Ice property '{}' is not set".format(key))
+        return retval
 
     def notifyPerson(self, personID, metadata, current=None):
         self.metadata_personID = metadata
         self.personID = personID
-        self.checkAuthorization()
+        self.check_authorization()
 
     def notifyCommand(self, command, metadata, current=None):
         self.metadata_command = metadata
-        self.command = command
-        self.checkAuthorization()
+        self.command = self.get_intention(command)
+        self.check_authorization()
 
-    def checkAuthorization(self, current=None):
-        if not self.observer:
-            logging.error("observer not set to authenticator service")
-            return
-
+    def check_authorization(self, current=None):
         # If we have a command and a person identification
         if self.command is not None and self.personID is not None:
-            if self.personID in self.person_authorized:
+            if not self.observer:
+                logging.error("observer not set to authenticator service")
+                return
 
-                if any(x in self.command for x in self.command_authorized):
-                    placeCommand = self.metadata_command.get(MetadataField.Place)
-                    placePersonID = self.metadata_personID.get(MetadataField.Place)
-
-                    # Events generated in the same place
-                    if placeCommand == placePersonID:
-                        self.observer.begin_notify(placeCommand, self.metadata_personID)
+            if self.personID in self.authorized_people.keys():
+                if self.command in self.authorized_people.get(self.personID):
+                    if self.metadata_command.get(MetadataField.Place) == self.metadata_personID.get(MetadataField.Place):
+                        self.observer.begin_notify(self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
                         logging.info("{} authorized to {}".format(self.personID, self.command))
-
-                        # Clean
-                        self.command = None
-                        self.personID = None
+                        self.clean_variables()
             else:
                 logging.info("{} is not authorized person".format(self.personID))
+                self.clean_variables()
+
+    def get_intention(self, command, current=None):
+        ai = apiai.ApiAI(self.dialogflow_token)
+
+        request = ai.text_request()
+
+        request.lang = 'es'
+        request.query = command
+
+        response = json.loads(request.getresponse().read().decode('utf-8'))
+        message = response['result']['metadata']['intentName']
+        return message
+
+    def get_authorized_people(self, database, current=None):
+        authorized_people = {}
+
+        with open(database, 'r') as f:
+            reader = csv.reader(f, delimiter=',')
+            for row in reader:
+                authorized_people[row[0]] = row[1:]
+
+        return authorized_people
+
+    def clean_variables(self, current=None):
+        self.metadata_personID = None
+        self.metadata_command = None
+        self.personID = None
+        self.command = None
 
 
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
         properties = broker.getProperties()
+        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
 
-        try:
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        except Ice.InitializationException:
-            logging.info("No config provided, using : '{}'".format(CONFIG_FILE))
-            properties.setProperty('Ice.Config', CONFIG_FILE)
-            adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-
-        servant = AuthenticatorI()
+        servant = AuthenticatorI(properties)
         proxy = adapter.add(servant, broker.stringToIdentity("authenticator"))
 
         proxy = citisim.remove_private_endpoints(proxy)

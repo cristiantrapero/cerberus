@@ -1,8 +1,8 @@
 Source: snapshot-service
-Section: python3
+Section: utils
 Priority: extra
 Maintainer: Cristian Trapero Mora <cristian.trapero@uclm.es>
-Build-Depends: debhelper (>= 7.0.50~), quilt
+Build-Depends: debhelper (>= 7.0.50~), python3
 Standards-Version: 3.9.8
 Homepage: https://bitbucket.org/arco_group/cerberus
 

@@ -1,16 +1,16 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
+import Ice
+import logging
+import os
 import sys
 import time
-import os
-import logging
-import Ice
 
 import libcitisim as citisim
 from libcitisim import SmartObject
 
-from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
+from watchdog.observers import Observer
 
 stderrLogger = logging.StreamHandler()
 stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
@@ -92,7 +92,6 @@ class Server(Ice.Application):
             return 1
 
         directory = os.path.abspath(directory)
-
         monitor.schedule(Handler(servant), directory)
 
         try:

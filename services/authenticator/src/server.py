@@ -73,7 +73,6 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
         ai = apiai.ApiAI(self.dialogflow_token)
 
         request = ai.text_request()
-
         request.lang = 'es'
         request.query = command
 

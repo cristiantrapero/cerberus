@@ -1,11 +1,11 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
+import cv2
 import sys
 import logging
 import numpy as np
 import openface
 import pickle
-import cv2
 import Ice
 
 import libcitisim as citisim

@@ -10,6 +10,7 @@ install:
 	install -m 744 authenticator $(DESTDIR)/usr/bin/
 	install -d $(DESTDIR)/usr/lib/cerberus/authenticator/
 	install -m 644 src/server.py $(DESTDIR)/usr/lib/cerberus/authenticator/
+	install -m 644 src/authorized_people.csv $(DESTDIR)/usr/lib/cerberus/authenticator/
 	install -d $(DESTDIR)/etc/default
 	install -m 644 src/server.config $(DESTDIR)/etc/default/authenticator.config
 

@@ -7,16 +7,16 @@ pike-repository:
     - refresh: True
     - reload: True
 
-python-packages:
+python3-packages:
   pkg.installed:
     - pkgs:
       - python3
-      - python-pip
       - python3-pip
+      - python-pip
     - refresh: True
     - reload: True
 
-pike-packages:
+citisim-modules:
   pkg.installed:
     - pkgs:
       - python3-zeroc-ice

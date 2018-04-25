@@ -11,3 +11,5 @@ apt-get update
 apt-get install salt-minion salt-ssh
 
 systemctl restart salt-minion
+
+#Conectar al salt master 

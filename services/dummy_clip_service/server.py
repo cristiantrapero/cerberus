@@ -22,12 +22,12 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         self.metadata = metadata
         self.trigger(self.recordTime)
 
-    def trigger(self, recordTime, current=None):
+    def trigger(self, seconds, current=None):
         if not self.observer:
             logging.error("observer not set to clip service")
             return
 
-        record = self.capture_audio(record_time)
+        record = self.capture_audio(seconds)
         self.observer.begin_notify(record, 'microphone', self.metadata)
 
     def capture_audio(self, record_time):

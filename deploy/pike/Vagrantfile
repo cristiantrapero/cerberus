@@ -1,55 +1,28 @@
 Vagrant.configure("2") do |config|
-  config.vm.define "master" do |master|
+  config.vm.define "cerberus-pike" do |master|
     master.vm.box = "debian/stretch64"
-    master.vm.hostname = 'master'
+    master.vm.hostname = 'cerberus-pike'
     master.vm.box_url = "debian/stretch64"
     master.vm.boot_timeout = 300
 
-    master.vm.network "public_network", ip: "161.67.80.212", bridge: "wlp58s0"
+    master.vm.network :private_network, ip: "192.168.1.100"
 
     master.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-      vb.customize ["modifyvm", :id, "--memory", 1024]
-      vb.customize ["modifyvm", :id, "--name", "master"]
-    end
-    master.vm.synced_folder "saltstack/salt", "/srv/salt/", owner:"vagrant", group:"vagrant"
-    master.vm.synced_folder "saltstack/etc", "/etc/salt/master.d/", owner:"root", group:"root"
-
-    master.vm.provision :salt do |salt|
-      salt.colorize = true
-      salt.install_master = true
-      salt.no_minion = true
-      salt.install_type = "stable"
-      salt.master_key = "saltstack/keys/master.pem"
-      salt.master_pub = "saltstack/keys/master.pub"
-      # salt.seed_master = {"cerberus-pike":"saltstack/keys/cerberus-pike.pub"}
-    end
-  end
-
-  config.vm.define "cerberus-pike" do |minion|
-    minion.vm.box = "debian/stretch64"
-    minion.vm.hostname = 'cerberus-pike'
-    minion.vm.box_url = "debian/stretch64"
-    minion.vm.boot_timeout = 300
-
-    minion.vm.network "public_network", ip: "161.67.80.213", bridge: "wlp58s0"
-
-    minion.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
       vb.customize ["modifyvm", :id, "--memory", 2048]
       vb.customize ["modifyvm", :id, "--name", "cerberus-pike"]
     end
 
-    minion.vm.provision :salt do |salt|
+    master.vm.synced_folder "saltstack/", "/srv/salt/", owner:"vagrant", group:"vagrant"
+
+    master.vm.provision :salt do |salt|
       salt.colorize = true
-      salt.masterless = false
+      salt.install_master = true
+      salt.no_minion = false
       salt.minion_id = "cerberus-pike"
       salt.install_type = "stable"
-      salt.minion_key = "saltstack/keys/cerberus-pike.pem"
-      salt.minion_pub = "saltstack/keys/cerberus-pike.pub"
-      salt.bootstrap_options = "-A 161.67.80.212"
+      salt.bootstrap_options = "-A 192.168.1.100"
     end
   end
 end

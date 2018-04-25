@@ -2,6 +2,7 @@
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
    <application name="Cerberus">
+      <description>Access Control System for Smart Office.</description>
       <service-template id="IceStorm">
          <parameter name="instance-name" default="${application}.IceStorm"/>
          <parameter name="topic-manager-endpoints" default="default"/>

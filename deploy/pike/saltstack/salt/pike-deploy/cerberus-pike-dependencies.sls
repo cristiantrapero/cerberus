@@ -1,3 +1,9 @@
+debian-packages:
+  pkg.installed:
+    - pkgs:
+      - cmake
+      - git
+
 pike-services-for-cerberus:
   pkg.installed:
     - pkgs:
@@ -14,29 +20,32 @@ pike-services-for-cerberus:
 person-recognizer-dependencies:
   pip.installed:
     - pkgs:
-      - numpy >= 1.1, < 2.0
-      - scipy >= 0.13, < 0.17
-      - pandas >= 0.13, < 0.18
-      - scikit-learn >= 0.17, < 0.18
-      - nose >= 1.3.1, < 1.4
+      - numpy >= 1.1, <= 2.0
+      - scipy >= 0.13, <= 0.17
+      - pandas >= 0.13, <= 0.18
+      - scikit-learn >= 0.17, <= 0.18
+      - nose >= 1.3.1, <= 1.4
       - nolearn == 0.5b1
       - opencv-python
       - dlib
     - bin_env: '/usr/bin/pip3'
     - require:
       - pkg: python3-packages
-      - pkg: citisim-modules
+      - pkg: debian-packages
 
 torch-repository:
   git.latest:
     - name: https://github.com/torch/distro.git
-    - target: ~/torch
+    - target: /home/vagrant/torch
     - force_checkout: True
 
 install-torch:
   cmd.run:
-    - name: bash install-deps; ./install.sh; source ~/.bashrc
-    - cwd: ~/torch
+    - names:
+      - bash install-deps;
+      - ./install.sh;
+      - source ~/.bashrc
+    - cwd: /home/vagrant/torch
     - require:
       - git: torch-repository
 
@@ -44,7 +53,7 @@ install-torch-dependencies:
   cmd.run:
     - name: for NAME in dpnn nn optim optnet csvigo cutorch cunn fblualib torchx tds; do luarocks install $NAME; done
     - require:
-      - pkg: install-torch
+      - cmd: install-torch
 
 openface-repository:
   git.latest:
@@ -57,7 +66,7 @@ install-openface-python-module:
     - name: python3 setup.py install
     - cwd: /tmp/openface/
     - require:
-      - pkg: python-packages
+      - pkg: python3-packages
       - git: openface-repository
 
 speech-to-text-dependencies:

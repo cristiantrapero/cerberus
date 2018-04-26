@@ -25,3 +25,15 @@ citisim-modules:
     - refresh: True
     - reload: True
     - pkgrepo: pike-repository
+
+opencv-dependencies:
+  pkg.installed:
+    - pkgs:
+      - build-essential
+      - cmake
+      - git
+      - libgtk2.0-dev
+      - pkg-config
+      - libavcodec-dev
+      - libavformat-dev
+      - libswscale-dev

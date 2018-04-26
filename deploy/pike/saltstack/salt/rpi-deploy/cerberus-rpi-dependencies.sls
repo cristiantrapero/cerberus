@@ -25,6 +25,7 @@ snapshot-service-dependencies:
     - require:
       - pkg: python3-packages
       - pkg: citisim-modules
+      - pkg: opencv-dependencies
 
 authenticator-service-dependencies:
   pip.installed:

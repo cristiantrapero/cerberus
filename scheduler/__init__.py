@@ -12,7 +12,7 @@ import SmartObject
 
 make_schedule(e):
     action = action_for_event(e)
-    
+
     service = service_that_perform(action)
     plan += service
 
@@ -36,6 +36,18 @@ may_x_invoke_y(x, y):
     return True
 
 
+class FaceService:
+    def get_invoking_iface(self):
+        pass
+    def get_invoking_caps(self):
+        return []
+    def get_provided_ifaces(self):
+        pass
+    def get_accepted_caps(self):
+        return []
+
+
+
 class Scheduler:
     def __init__(self, broker):
         self.broker = broker
@@ -48,14 +60,14 @@ class Scheduler:
         plan = [action_service]
         pre_events = self.get_prerequirements_for_action(action)
         print(pre_events)
-        
+
         for e in pre_events:
             subplan = self.make_schedule(e))
             if self.syntax_matching(subplan.head, action):
                 plan.append(subplan.head)
 
     # FIXME: it should take provider service, instead of provider_action
-    def syntax_matching(self, producer, consumer_action):  
+    def syntax_matching(self, producer, consumer_action):
         consumed_argument = self.get_argument_for_action(action)
         # consumed_argument = self.get_consumed_by_service(consumer)
         if argument is None:
@@ -71,14 +83,14 @@ class Scheduler:
     def get_prerequirements_for_action(self, action):
         sentence = '(get-the-events-required-for-action ' + action + ')'
         reply = self.scone.sentence(sentence)
-        
+
         if reply == 'NIL':
             return []
 
         prerequirements = reply.strip("()").split("}")
         return [x for x in [x.strip(" {") for x in prerequirements] if x]
 
-    
+
     def make_schedule_old(self, event):
         services = []
 

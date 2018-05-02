@@ -15,6 +15,7 @@ Depends:
  citisim-slice,
  libcitisim,
  python3-scipy,
+ python3-numpy,
  libatlas-base-dev
 Description: Cerberus Clip Service
  This service record an audio file from the audio interface in a Raspberry Pi.

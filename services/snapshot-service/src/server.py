@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
+import os
 import logging
 import cv2
 import urllib.request
@@ -53,7 +54,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
         for i in range(snapshots):
             self.take_snapshot()
-            fd = cv2.imread("/tmp/snapshot.jpg")
+            fd = cv2.imread("{}/snapshot.jpg".format(os.path.abspath(self.directory)))
 
             # Encode image to send as message
             out, buf = cv2.imencode('.jpg', fd)

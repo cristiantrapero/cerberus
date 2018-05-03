@@ -26,7 +26,7 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         self.properties = properties
         self.seconds = int(self.get_property('ClipService.Seconds'))
         self.place = str(self.get_property('ClipService.Place'))
-        self.directory = str(self.get_property('ClipService.Directory'))
+        self.directory = os.path.abspath(str(self.get_property('ClipService.Directory')))
         super(self.__class__, self).__init__()
 
     def get_property(self, key, default=None):
@@ -55,10 +55,10 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
     def capture_audio(self, seconds, current=None):
         # plughw is the sound card interface
         self.ring_buzzer()
-        subprocess.call(["arecord", "-D", "plughw:0", "--duration", str(seconds), "-f", "cd", "{}record.wav".format(self.directory)])
+        subprocess.call(["arecord", "-D", "plughw:0", "--duration", str(seconds), "-f", "cd", "{}/record.wav".format(self.directory)])
         self.ring_buzzer()
 
-        rate, samples = scipy.io.wavfile.read('{}/record.wav'.format(os.path.abspath(self.directory)))
+        rate, samples = scipy.io.wavfile.read('{}/record.wav'.format(self.directory))
 
         # Convert audio as numpy array
         audio = np.asarray(samples, dtype=np.int16)

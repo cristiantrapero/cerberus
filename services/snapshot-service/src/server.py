@@ -29,7 +29,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
         self.cameraIP = str(self.get_property('SnapshotService.CameraIP'))
         self.cameraUser = str(self.get_property('SnapshotService.CameraUser'))
         self.cameraPass = str(self.get_property('SnapshotService.CameraPass'))
-        self.directory = str(self.get_property('SnapshotService.Directory'))
+        self.directory = os.path.abspath(str(self.get_property('SnapshotService.Directory')))
         super(self.__class__, self).__init__()
 
     def get_property(self, key, default=None):
@@ -54,7 +54,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
         for i in range(snapshots):
             self.take_snapshot()
-            fd = cv2.imread("{}/snapshot.jpg".format(os.path.abspath(self.directory)))
+            fd = cv2.imread("{}/snapshot.jpg".format(self.directory))
 
             # Encode image to send as message
             out, buf = cv2.imencode('.jpg', fd)
@@ -66,7 +66,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
     def take_snapshot(self, current=None):
         url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.cameraUser, self.cameraPass)
-        urllib.request.urlretrieve(url_snapshot, "{}snapshot.jpg".format(self.directory))
+        urllib.request.urlretrieve(url_snapshot, "{}/snapshot.jpg".format(self.directory))
 
 
 class Server(Ice.Application):

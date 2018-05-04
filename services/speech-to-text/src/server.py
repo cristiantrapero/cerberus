@@ -5,7 +5,7 @@ import logging
 import json
 import scipy.io.wavfile
 import numpy as np
-from os.path import join, dirname
+from os.path import join, dirname, abspath
 from watson_developer_cloud import SpeechToTextV1
 import Ice
 
@@ -26,7 +26,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         self.properties = properties
         self.IBMusername = str(self.get_property("SpeechToText.IBMusername"))
         self.IBMpassword = str(self.get_property("SpeechToText.IBMpassword"))
-        self.directory = str(self.get_property("SpeechToText.Directory"))
+        self.directory = abspath(str(self.get_property("SpeechToText.Directory")))
         super(self.__class__, self).__init__()
 
     def get_property(self, key, default=None):
@@ -46,7 +46,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
             return
 
         self.metadata = metadata
-        transcription = self.transcribeAudio(data)
+        transcription = self.transcribe_audio(data)
         self.observer.notifyCommand(transcription, self.metadata)
         print("message '{}' sent".format(transcription))
 
@@ -55,8 +55,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         speech_to_text = SpeechToTextV1(
             username=self.IBMusername,
             password=self.IBMpassword,
-            url='https://stream.watsonplatform.net/speech-to-text/api'
-        )
+            url='https://stream.watsonplatform.net/speech-to-text/api')
 
         audio = np.fromstring(data, np.int16)
 
@@ -64,12 +63,13 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         audio = audio.reshape(audio.size//2, 2)
 
         # Write the audio data to send after
-        scipy.io.wavfile.write('/tmp/command.wav', 44100, audio)
+        scipy.io.wavfile.write('{}/command.wav'.format(self.directory), 44100, audio)
 
-        with open(join(dirname(__file__), '/tmp/command.wav'), 'rb') as audio_file:
+        with open(join(dirname(__file__), '{}/command.wav'.format(self.directory)), 'rb') as audio_file:
             response = json.dumps(speech_to_text.recognize(
-                audio_file, model='es-ES_BroadbandModel', content_type='audio/wav',
-                word_confidence=True),
+                audio=audio_file,
+                content_type='audio/wav',
+                model='es-ES_BroadbandModel'),
                 indent=2)
 
             response_data = json.loads(response)

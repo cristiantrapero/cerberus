@@ -17,18 +17,15 @@ logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.INFO)
 
 
-# Use the classifier of celebrities as example
-MODEL_PREDICTIONFACE = '/usr/lib/person-recognizer/models/dlib/shape_predictor_68_face_landmarks.dat'
-MODEL_TORCH = '/usr/lib/person-recognizer/models/openface/nn4.small2.v1.t7'
-
-
 class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
     observer_cast = SmartObject.AuthenticatedCommandServicePrx
 
     def __init__(self, properties):
         self.metadata = None
         self.properties = properties
-        self.classifier_model = str(self.get_property('PersonRecognizer.ClassifierModel'))
+        self.classifier_model = str(self.get_property('PersonRecognizer.ClassifierModel', './models/openface/celeb-classifier.nn4.small2.v1.pkl'))
+        self.predictionface_model = str(self.get_property('PersonRecognizer.PredictionFaceModel', './models/dlib/shape_predictor_68_face_landmarks.dat'))
+        self.torch_model = str(self.get_property('PersonRecognizer.TorchModel', './models/openface/nn4.small2.v1.t7'))
         super(self.__class__, self).__init__()
 
     def get_property(self, key, default=None):
@@ -65,7 +62,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
                 (le, clf) = pickle.load(f, encoding='latin1')
 
         # Use dlib’s landmark estimation to align faces
-        align = openface.AlignDlib(MODEL_PREDICTIONFACE)
+        align = openface.AlignDlib(self.predictionface_model)
 
         # Get the largest face from the image
         bb = align.getLargestFaceBoundingBox(data)
@@ -77,9 +74,9 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 
         if aligned_face is None:
             logging.error("No face detected.\n")
-            return
+            return None
 
-        net = openface.TorchNeuralNet(MODEL_TORCH, imgDim=96, cuda=False)
+        net = openface.TorchNeuralNet(self.torch_model, imgDim=96, cuda=False)
 
         rep = net.forward(aligned_face)
         repa = rep.reshape(1, -1)

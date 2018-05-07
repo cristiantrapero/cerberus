@@ -7,6 +7,7 @@ import scipy.io.wavfile
 import numpy as np
 from os.path import join, dirname, abspath
 from watson_developer_cloud import SpeechToTextV1
+from watson_developer_cloud.websocket import RecognizeCallback
 import Ice
 
 import libcitisim as citisim
@@ -47,7 +48,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
 
         self.metadata = metadata
         transcription = self.transcribe_audio(data)
-        self.observer.notifyCommand(transcription, self.metadata)
+        self.observer.begin_notifyCommand(transcription, self.metadata)
         print("message '{}' sent".format(transcription))
 
     def transcribe_audio(self, data):
@@ -70,20 +71,14 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
                 audio=audio_file,
                 content_type='audio/wav',
                 model='es-ES_BroadbandModel'),
-                indent=2)
-
-            response_data = json.loads(response)
-
-            transcript = ""
+                indent=2, ensure_ascii=False)
 
             try:
-                transcript = (response_data["results"][0]["alternatives"][0]["transcript"]).encode('utf-8')
+                transcript = json.loads(response)["results"][0]["alternatives"][0]["transcript"]
             except:
                 logging.error("Speech not detected")
-
-            command = str(transcript.rstrip())
-
-        return command
+                return None
+            return transcript
 
 
 class Server(Ice.Application):

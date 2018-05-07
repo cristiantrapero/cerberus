@@ -16,4 +16,4 @@ install:
 	install -m 644 src/server.config $(DESTDIR)/etc/default/person-recognizer.config
 
 clean:
-	$(RM) -rf ./test/__pycache__ ./src/__pycache__
+	find . \( -name "*.pyc" -o -name "*~" \) -print -delete

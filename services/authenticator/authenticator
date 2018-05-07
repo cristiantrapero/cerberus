@@ -3,4 +3,4 @@
 
 CONFIG=${1:-"--Ice.Config=src/server.config"}
 
-src/server.py $CONFIG
+python3 /usr/lib/authenticator/server.py $CONFIG

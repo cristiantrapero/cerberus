@@ -26,7 +26,7 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
         self.metadata_command = None
         self.personID = None
         self.command = None
-        self.database = str(self.get_property('Authenticator.Database'))
+        self.database = str(self.get_property('Authenticator.Database', './authorized_people.csv'))
         self.dialogflow_token = str(self.get_property('Authenticator.DialogflowToken'))
         self.authorized_people = self.get_authorized_people(self.database)
         super(self.__class__, self).__init__()

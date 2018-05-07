@@ -20,9 +20,12 @@ The repository is structured as follows:
 | motion-sensor     |  yes  |  yes |       yes      |
 | snapshot-service  |  yes  |  yes |       yes      |
 | clip-service      |  yes  |  yes |       yes      |
-| person-recognizer |  yes  |  yes |       no       |
+| person-recognizer |  yes  |  yes |       yes      |
 | speech-to_text    |  yes  |  yes |       yes      |
 | authenticator     |  yes  |  yes |       yes      |
-| door-actuator     |  yes  |  yes |       -        |
+| door-actuator     |  yes  |  yes |  not available |
 | scheduler         |  yes  |  no  |       no       |
 | simulate_motion   |  yes  |  no  |       no       |
+
+**To execute the real services it is necessary to have access tokens to the IBM speech to text and Dialogflow APIs.**
+There are some default credentials created by Cristian. Look up in the authenticator and speech to text services **config files**.

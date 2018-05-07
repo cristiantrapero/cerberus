@@ -45,10 +45,12 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
     def notifyPerson(self, personID, metadata, current=None):
         self.metadata_personID = metadata
         self.personID = personID
+        print("dentro person")
         self.check_authorization()
 
     def notifyCommand(self, command, metadata, current=None):
         self.metadata_command = metadata
+        print("dentro person")
         self.command = self.get_intention(command)
         self.check_authorization()
 

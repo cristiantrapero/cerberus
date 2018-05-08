@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
-   <application name="Cerberus">
+   <application name="Cerberus in one node">
       <description>Access Control System for Smart Office.</description>
       <service-template id="IceStorm">
          <parameter name="instance-name" default="${application}.IceStorm"/>

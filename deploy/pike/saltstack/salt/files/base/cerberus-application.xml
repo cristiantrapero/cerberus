@@ -92,7 +92,18 @@
          </icebox>
       </server-template>
       <node name="cerberus-pike">
-         <description>Pike cerberus services.</description>
+         <description>Services that run in cerberus node.</description>
+         <server id="AuthenticatedCommandService" activation="always" exe="authenticator">
+            <properties>
+               <property name="Ice.StdOut" value="/tmp/cerberus/authenticator.out"/>
+               <property name="Ice.StdErr" value="/tmp/cerberus/authenticator.err"/>
+               <property name="Authenticator.Database" value="/usr/lib/authenticator/authorized_people.csv"/>
+               <property name="Authenticator.DialogflowToken" value="aedd62ed20ba4697b39d214b7d727c16"/>
+            </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="authenticator"/>
+            </adapter>
+         </server>
          <icebox id="IceBox" activation="always" exe="icebox">
             <properties>
                <property name="Ice.StdOut" value="/tmp/cerberus/icebox.out"/>
@@ -113,11 +124,13 @@
                </adapter>
             </service>
          </icebox>
-         <server id="PersonRecognizer" activation="always" exe="python3" pwd="./services/person-recognizer/src">
-            <option>server.py</option>
+         <server id="PersonRecognizer" activation="always" exe="person-recognizer">
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/person_recognizer.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/person_recognizer.out"/>
+               <property name="PersonRecognizer.ClassifierModel" value="/usr/lib/person-recognizer/models/openface/celeb-classifier.nn4.small2.v1.pkl"/>
+               <property name="PersonRecognizer.PredictionFaceModel" value="/usr/lib/person-recognizer/models/dlib/shape_predictor_68_face_landmarks.dat"/>
+               <property name="PersonRecognizer.TorchModel" value="/usr/lib/person-recognizer/models/openface/nn4.small2.v1.t7"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="person-recognizer"/>
@@ -143,13 +156,29 @@
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SpeechToText" activation="always" exe="python3" pwd="./services/speech-to-text/src">
-            <option>server.py</option>
+         <server id="SnapshotService" activation="always" exe="snapshot-service">
+            <properties>
+               <property name="Ice.StdErr" value="/tmp/cerberus/snapshot_service.err"/>
+               <property name="Ice.StdOut" value="/tmp/cerberus/snapshot_service.out"/>
+               <property name="SnapshotService.Snapshots" value="1"/>
+               <property name="SnapshotService.Delay" value="0"/>
+               <property name="SnapshotService.CameraIP" value="161.67.106.69"/>
+               <property name="SnapshotService.CameraUser" value="arco"/>
+               <property name="SnapshotService.CameraPass" value="ARCOcamC1."/>
+               <property name="SnapshotService.Place" value="ITSI-corridor"/>
+               <property name="SnapshotService.Directory" value="/tmp/cerberus/"/>
+            </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="snapshot-service"/>
+            </adapter>
+         </server>
+         <server id="SpeechToText" activation="always" exe="speech-to-text">
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/speech_to_text.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/speech_to_text.out"/>
-               <property name="SpeechToText.IBMusername" value="ef4417e7-cb37-4898-a457-2a8d9f255d89"/>
-               <property name="SpeechToText.IBMpassword" value="ETRMgWLYmtKj"/>
+               <property name="SpeechToText.IBMusername" value="d73b4cd2-01fc-48e4-ac6a-49392dae1106"/>
+               <property name="SpeechToText.IBMpassword" value="GVSGDGcjMR3f"/>
+               <property name="SpeechToText.Directory" value="/tmp/cerberus/"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="speech-to-text"/>
@@ -168,35 +197,25 @@
          </server>
       </node>
       <node name="cerberus-rpi">
-         <description>Raspberry Pi cerberus services.</description>
-         <server id="AuthenticatedCommandService" activation="always" exe="python3" pwd="./services/authenticator/src">
-            <option>server.py</option>
-            <properties>
-               <property name="Ice.StdOut" value="/tmp/cerberus/authenticator.out"/>
-               <property name="Ice.StdErr" value="/tmp/cerberus/authenticator.err"/>
-            </properties>
-            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
-               <object identity="authenticator"/>
-            </adapter>
-         </server>
-         <server id="ClipService" activation="always" exe="python3" pwd="./services/clip-service/src">
-            <option>server.py</option>
+         <description>Services that run in the rpi.</description>
+         <server id="ClipService" activation="always" exe="clip-service">
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/clip_service.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/clip_service.out"/>
                <property name="ClipService.RecordTime" value="5"/>
                <property name="ClipService.Place" value="ITSI-corridor"/>
+               <property name="ClipService.Directory" value="/tmp/cerberus"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="clip-service"/>
             </adapter>
          </server>
-         <server id="MotionSensor" activation="always" exe="python3" pwd="./services/motion-sensor/src">
-            <option>server.py</option>
+         <server id="MotionSensor" activation="always" exe="motion-sensor">
+            <description>Set the FTP directory that storages the Camera Snapshots in the MonitoredDirectory property.</description>
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/motion_sensor.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/motion_sensor.out"/>
-               <property name="MotionSensor.MonitoredDirectory" value="/home/pi/C1_00626E6F30CC"/>
+               <property name="MotionSensor.MonitoredDirectory" value="/tmp/"/>
                <property name="MotionSensor.Quality" value="255"/>
                <property name="MotionSensor.Expiration" value="30"/>
                <property name="MotionSensor.Latitude" value="38.99793"/>
@@ -206,22 +225,6 @@
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="motion-sensor"/>
-            </adapter>
-         </server>
-         <server id="SnapshotService" activation="always" exe="python3" pwd="./services/snapshot-service/src">
-            <option>server.py</option>
-            <properties>
-               <property name="Ice.StdErr" value="/tmp/cerberus/snapshot_service.err"/>
-               <property name="Ice.StdOut" value="/tmp/cerberus/snapshot_service.out"/>
-               <property name="SnapshotService.Snapshots" value="1"/>
-               <property name="SnapshotService.Delay" value="0"/>
-               <property name="SnapshotService.CameraIP" value="161.67.106.69"/>
-               <property name="SnapshotService.CameraUser" value="arco"/>
-               <property name="SnapshotService.CameraPass" value="ARCOcamC1."/>
-               <property name="SnapshotService.Place" value="ITSI-corridor"/>
-            </properties>
-            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
-               <object identity="snapshot-service"/>
             </adapter>
          </server>
       </node>

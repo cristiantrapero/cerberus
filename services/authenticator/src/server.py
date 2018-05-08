@@ -45,12 +45,10 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
     def notifyPerson(self, personID, metadata, current=None):
         self.metadata_personID = metadata
         self.personID = personID
-        print("dentro person")
         self.check_authorization()
 
     def notifyCommand(self, command, metadata, current=None):
         self.metadata_command = metadata
-        print("dentro person")
         self.command = self.get_intention(command)
         self.check_authorization()
 
@@ -65,7 +63,7 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
                 if self.command in self.authorized_people.get(self.personID):
                     if self.metadata_command.get(MetadataField.Place) == self.metadata_personID.get(MetadataField.Place):
                         self.observer.begin_notify(self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
-                        logging.info("{} authorized to {}".format(self.personID, self.command))
+                        logging.info("{} authorized to: {}".format(self.personID, self.command))
                         self.clean_variables()
             else:
                 logging.info("{} is not authorized person".format(self.personID))

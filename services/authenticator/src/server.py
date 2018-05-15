@@ -62,11 +62,11 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
             if self.personID in self.authorized_people.keys():
                 if self.command in self.authorized_people.get(self.personID):
                     if self.metadata_command.get(MetadataField.Place) == self.metadata_personID.get(MetadataField.Place):
-                        self.observer.begin_notify(self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
+                        self.observer.notify(self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
                         logging.info("{} authorized to: {}".format(self.personID, self.command))
                         self.clean_variables()
             else:
-                logging.info("{} is not authorized person".format(self.personID))
+                logging.error("{} is not authorized person".format(self.personID))
                 self.clean_variables()
 
     def get_intention(self, command, current=None):

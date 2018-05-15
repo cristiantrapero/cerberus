@@ -49,7 +49,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         self.metadata = metadata
         transcription = self.transcribe_audio(data)
         self.observer.begin_notifyCommand(transcription, self.metadata)
-        print("message '{}' sent".format(transcription))
+        logging.info("message '{}' sent".format(transcription))
 
     def transcribe_audio(self, data):
         # Credentials IBM service
@@ -76,7 +76,7 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
             try:
                 transcript = json.loads(response)["results"][0]["alternatives"][0]["transcript"]
             except:
-                logging.error("Speech not detected")
+                logging.info("Speech not detected.")
                 return None
             return transcript
 

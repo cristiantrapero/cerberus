@@ -45,6 +45,11 @@ app-add: app-rm
 	$(IG_ADMIN) -e "application add config/dummy-app.xml"
 	@echo -- app \"$(APP)\" added ok;
 
+test-app-add: app-rm
+	$(call WAIT_READY)
+	$(IG_ADMIN) -e "application add deploy/cerberus-test.xml"
+	@echo -- app \"$(APP)\" added ok;
+
 app-rm:
 	$(call APP_RM,$(APP))
 
@@ -65,6 +70,9 @@ simulate-motion:
 
 run-test-wiring-service:
 	./tests/wiring-service.py --Ice.Config=config/locator.config WiringService
+
+connect-authenticator-to-sonoff:
+	./utils/set-observer.py --Ice.Config=config/locator.config "authenticator" "Door -t -e 1.1:tcp -h 161.67.106.89 -p 4455"
 
 restart: clean grid-start app-add
 

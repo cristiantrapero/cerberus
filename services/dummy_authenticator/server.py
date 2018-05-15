@@ -9,6 +9,7 @@ from libcitisim import SmartObject
 
 from SmartObject import MetadataField
 
+
 class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandService):
     observer_cast = SmartObject.EventSinkPrx
 
@@ -48,6 +49,9 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
                         self.personID = None
             else:
                 print("{} is not authorized person".format(self.personID))
+                self.command = None
+                self.personID = None
+
 
 class Server(Ice.Application):
     def run(self, argv):

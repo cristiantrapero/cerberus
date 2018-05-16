@@ -17,7 +17,7 @@ logging.getLogger().addHandler(stderrLogger)
 logging.getLogger().setLevel(logging.INFO)
 
 
-class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
+class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandService):
     observer_cast = SmartObject.EventSinkPrx
 
     def __init__(self, properties):
@@ -45,11 +45,13 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
     def notifyPerson(self, personID, metadata, current=None):
         self.metadata_personID = metadata
         self.personID = personID
+        logging.info("Person: {}".format(self.personID))
         self.check_authorization()
 
     def notifyCommand(self, command, metadata, current=None):
         self.metadata_command = metadata
         self.command = self.get_intention(command)
+        logging.info("Command: {}".format(self.command))
         self.check_authorization()
 
     def check_authorization(self, current=None):
@@ -62,7 +64,7 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.Observable):
             if self.personID in self.authorized_people.keys():
                 if self.command in self.authorized_people.get(self.personID):
                     if self.metadata_command.get(MetadataField.Place) == self.metadata_personID.get(MetadataField.Place):
-                        self.observer.notify(self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
+                        self.observer.begin_notify(self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
                         logging.info("{} authorized to: {}".format(self.personID, self.command))
                         self.clean_variables()
             else:

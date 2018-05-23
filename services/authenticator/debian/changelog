@@ -1,3 +1,9 @@
+authenticator (0.20180523.1-1) unstable; urgency=low
+
+  * Fixed authenticator config
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 23 May 2018 17:14:04 +0200
+
 authenticator (0.20180523-1) unstable; urgency=low
 
   * Initial release

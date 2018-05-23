@@ -50,7 +50,8 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
 
     def notifyCommand(self, command, metadata, current=None):
         self.metadata_command = metadata
-        self.command = self.get_intention(command)
+        if command != "":
+            self.command = self.get_intention(command)
         logging.info("Command: {}".format(self.command))
         self.check_authorization()
 

@@ -1,6 +1,5 @@
-snapshot-service (0.20180418-1) unstable; urgency=low
+snapshot-service (0.20180523-1) unstable; urgency=low
 
   * Initial release
 
- -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 18 Apr 2018 13:17:25 +0200
-
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 23 May 2018 12:47:34 +0200

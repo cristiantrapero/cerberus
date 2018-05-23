@@ -1,6 +1,5 @@
-clip-service (0.20180418-1) unstable; urgency=low
+clip-service (0.20180523-1) unstable; urgency=low
 
   * Initial release
 
- -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 18 Apr 2018 11:33:34 +0200
-
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 23 May 2018 12:34:29 +0200

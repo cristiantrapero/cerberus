@@ -20,19 +20,34 @@ sudo apt-get install -y dharma citisim-slice libcitisim citisim-wiring-service
 # Upgrade pip3
 sudo -H pip3 install --upgrade pip
 
-# Clone openface repository
-git clone --recursive https://github.com/cmusatyalab/openface.git $OPENFACE
-
 # Install openface
-cd $OPENFACE
-sudo pip3 install -r requirements.txt
-sudo python3 setup.py install
+if python3 -c "import openface" &> /dev/null; then
+    echo 'Openface is installed.'
+else
+    # Clone openface repository
+    git clone --recursive https://github.com/cmusatyalab/openface.git $OPENFACE
+    # Install openface
+    cd $OPENFACE
+    sudo pip3 install -r requirements.txt
+    sudo python3 setup.py install
+fi
 
 # Install opencv for Python3
 sudo pip3 install opencv-python
 
+# Install torch
+if type "th" > /dev/null; then
+   echo 'Torch is installed.'
+else
+   git clone https://github.com/torch/distro.git ~/torch --recursive
+   cd ~/torch; bash install-deps;
+   ./install.sh
+   source ~/.bashrc
+   for NAME in dpnn nn optim optnet csvigo cutorch cunn fblualib torchx tds; do luarocks install $NAME; done
+fi
+
 # Install Python libraries
-sudo pip3 install watson-developer-cloud watchdog service_identity
+sudo pip3 install watson-developer-cloud watchdog service_identity apiai
 
 # Install dlib for Python3
 sudo apt-get install -y cmake

@@ -164,10 +164,10 @@
                <object identity="PropertyServer"/>
             </adapter>
          </server>
-         <server id="SconeWrapper" activation="always" exe="scone-wrapper" pwd="/root/cerberus/">
+         <server id="SconeWrapper" activation="manual" exe="/usr/bin/scone-wrapper" pwd="/var/lib/ice/icegrid/node1/cerberus">
             <properties>
-               <property name="Ice.StdOut" value="${server.distrib}/scone-wrapper.out"/>
-               <property name="Ice.StdErr" value="${server.distrib}/scone-wrapper.err"/>
+               <property name="Ice.StdOut" value="${server.distrib}/scone.out"/>
+               <property name="Ice.StdErr" value="${server.distrib}/scone.err"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="scone"/>

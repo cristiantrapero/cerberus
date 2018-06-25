@@ -93,8 +93,9 @@
       </server-template>
       <node name="cerberus">
          <description>Services that run in pike node.</description>
-         <server id="AuthenticatedCommandService" activation="always" exe="authenticator">
+         <server id="AuthenticatedCommandService" activation="manual" exe="authenticator">
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 10004"/>
                <property name="Ice.StdOut" value="${server.distrib}/authenticator.out"/>
                <property name="Ice.StdErr" value="${server.distrib}/authenticator.err"/>
                <property name="Authenticator.Database" value="/usr/lib/authenticator/authorized_people.csv"/>
@@ -104,7 +105,7 @@
                <object identity="authenticator"/>
             </adapter>
          </server>
-         <icebox id="IceBox" activation="always" exe="icebox">
+         <icebox id="IceBox" activation="manual" exe="icebox">
             <properties>
                <property name="Ice.StdOut" value="${server.distrib}/icebox.out"/>
                <property name="Ice.StdErr" value="${server.distrib}/icebox.err"/>
@@ -124,9 +125,10 @@
                </adapter>
             </service>
          </icebox>
-         <server id="MotionSensor" activation="always" exe="motion-sensor">
+         <server id="MotionSensor" activation="manual" exe="motion-sensor">
             <description>Set the FTP directory that storages the Camera Snapshots in the MonitoredDirectory property.</description>
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 10000"/>
                <property name="Ice.StdErr" value="${server.distrib}/motion_sensor.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/motion_sensor.out"/>
                <property name="MotionSensor.MonitoredDirectory" value="/tmp/"/>
@@ -137,12 +139,13 @@
                <property name="MotionSensor.Altitude" value="637.10"/>
                <property name="MotionSensor.Place" value="ITSI-corridor"/>
             </properties>
-            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 10000" id="${server}.Adapter">
                <object identity="motion-sensor"/>
             </adapter>
          </server>
-         <server id="PersonRecognizer" activation="always" exe="person-recognizer">
+         <server id="PersonRecognizer" activation="manual" exe="person-recognizer">
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 10002"/>
                <property name="Ice.StdErr" value="${server.distrib}/person_recognizer.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/person_recognizer.out"/>
                <property name="PersonRecognizer.ClassifierModel" value="/usr/lib/person-recognizer/models/openface/celeb-classifier.nn4.small2.v1.pkl"/>
@@ -153,7 +156,7 @@
                <object identity="person-recognizer"/>
             </adapter>
          </server>
-         <server id="PropertyServer" activation="always" exe="property-server">
+         <server id="PropertyServer" activation="manual" exe="property-server">
             <properties>
                <property name="Ice.StdErr" value="${server.distrib}/property-service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/property-service.out"/>
@@ -166,6 +169,7 @@
          </server>
          <server id="SconeWrapper" activation="manual" exe="/usr/bin/scone-wrapper" pwd="/var/lib/ice/icegrid/node1/cerberus">
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 10005"/>
                <property name="Ice.StdOut" value="${server.distrib}/scone.out"/>
                <property name="Ice.StdErr" value="${server.distrib}/scone.err"/>
             </properties>
@@ -173,8 +177,9 @@
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SnapshotService" activation="always" exe="snapshot-service">
+         <server id="SnapshotService" activation="manual" exe="snapshot-service">
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 10001"/>
                <property name="Ice.StdErr" value="${server.distrib}/snapshot_service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/snapshot_service.out"/>
                <property name="SnapshotService.Snapshots" value="1"/>
@@ -189,8 +194,9 @@
                <object identity="snapshot-service"/>
             </adapter>
          </server>
-         <server id="SpeechToText" activation="always" exe="speech-to-text">
+         <server id="SpeechToText" activation="manual" exe="speech-to-text">
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 10003"/>
                <property name="Ice.StdErr" value="${server.distrib}/speech_to_text.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/speech_to_text.out"/>
                <property name="SpeechToText.IBMusername" value="d73b4cd2-01fc-48e4-ac6a-49392dae1106"/>
@@ -201,8 +207,9 @@
                <object identity="speech-to-text"/>
             </adapter>
          </server>
-         <server id="WiringService" activation="always" exe="citisim-wiring">
+         <server id="WiringService" activation="manual" exe="citisim-wiring">
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 10006"/>
                <property name="Ice.StdErr" value="${server.distrib}/wiring-service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/wiring-service.out"/>
                <property name="IceStorm.TopicManager.Proxy" value="IceStorm/TopicManager"/>
@@ -215,7 +222,7 @@
       </node>
       <node name="cerberus-rpi">
          <description>Services that run in the rpi.</description>
-         <server id="ClipService" activation="always" exe="clip-service">
+         <server id="ClipService" activation="manual" exe="clip-service">
             <properties>
                <property name="Ice.StdErr" value="${server.distrib}/clip_service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/clip_service.out"/>

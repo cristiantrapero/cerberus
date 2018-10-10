@@ -14,6 +14,7 @@ Depends:
  python3-zeroc-ice,
  citisim-slice,
  libcitisim,
- python3-numpy
+ python3-numpy,
+ libdlib-data
 Description: Cerberus Person Recognizer
  This service recognize a face person usign the Openface Library.

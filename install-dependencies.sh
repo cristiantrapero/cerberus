@@ -15,7 +15,7 @@ sudo apt-get install -y python3-zeroc-ice zeroc-ice36
 sudo apt-get install -y scone scone-server scone-wrapper
 
 # Install citisim libraries
-sudo apt-get install -y dharma citisim-slice libcitisim citisim-wiring-service
+sudo apt-get install -y citisim-slice libcitisim citisim-wiring-service
 
 # Upgrade pip3
 sudo -H pip3 install --upgrade pip
@@ -47,7 +47,7 @@ else
 fi
 
 # Install Python libraries
-sudo pip3 install watson-developer-cloud watchdog service_identity apiai
+sudo pip3 install watson-developer-cloud watchdog service_identity apiai scipy
 
 # Install dlib for Python3
 sudo apt-get install -y cmake

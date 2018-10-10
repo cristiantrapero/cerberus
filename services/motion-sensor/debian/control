@@ -16,4 +16,4 @@ Depends:
  libcitisim,
  python3-watchdog
 Description: Cerberus Motion Sensor
- This service monitor the changes in a directory in order to detect  the images creation in that.
+ This service monitor the changes in a directory in order to detect the .png and .jpg images creation in that.

@@ -40,7 +40,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
                 logging.info(" - using default value: {}".format(default))
                 return default
             else:
-                raise NameError("Ice property '{}' is not set".format(key))
+                raise NameError("You must add the property '{}'".format(key))
         return retval
 
     def notify(self, source, metadata, current=None):
@@ -48,12 +48,14 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
         self.trigger(self.snapshots, self.delay)
 
     def trigger(self, snapshots, delay, current=None):
-        if not self.observer:
-            logging.error("observer not set to snapshot service")
-            return
-
         for i in range(snapshots):
-            self.take_snapshot()
+            
+            try:
+                url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.cameraUser, self.cameraPass)
+                urllib.request.urlretrieve(url_snapshot, "{}/snapshot.jpg".format(self.directory))
+            except urllib.error.URLError:
+                logging.error("IP Camera URL error. Check the IP, user and camera pass.\n")
+                return
 
             try:
                 fd = cv2.imread("{}/snapshot.jpg".format(self.directory))
@@ -61,20 +63,16 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
                 out, buf = cv2.imencode('.jpg', fd)
             except cv2.error:
                 logging.error("The JPEG image is empty or not created.")
-                return 1
+                return 
+
+            if not self.observer:
+                logging.error("The image couldn't be sent. Observer not set to snapshot service.")
+                return
 
             self.observer.begin_notify(buf, self.place, self.metadata)
-            logging.info("snapshot taken")
+            logging.info("Snapshot taken.")
 
-            time.sleep(delay)
-
-    def take_snapshot(self, current=None):
-        try:
-            url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.cameraUser, self.cameraPass)
-            urllib.request.urlretrieve(url_snapshot, "{}/snapshot.jpg".format(self.directory))
-        except urllib.error.URLError:
-            logging.error("IP Camera URL error. Check the IP, user and camera pass.\n")
-            return 1
+            time.sleep(delay)        
 
 
 class Server(Ice.Application):

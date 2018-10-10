@@ -15,4 +15,4 @@ Depends:
  citisim-slice,
  libcitisim
 Description: Cerberus Snapshot Service
- Service that captures a snapshot from a IP camera.
+ Service that captures a snapshot from a IP Foscam camera.

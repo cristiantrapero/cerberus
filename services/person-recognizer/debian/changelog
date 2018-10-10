@@ -1,3 +1,9 @@
+person-recognizer (0.20180524-1) unstable; urgency=low
+
+  * New release
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 10 Oct 2018 13:40:30 +0200
+
 person-recognizer (0.20180523-1) unstable; urgency=low
 
   * Initial release

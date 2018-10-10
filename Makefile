@@ -66,7 +66,7 @@ run-scheduler:
 	./scheduler/scheduler.py --Ice.Config=config/locator.config scone WiringService
 
 simulate-motion:
-	./services/simulate_motion/simulate-motion.py --Ice.Config=config/locator.config
+	./utils/simulate-motion.py --Ice.Config=config/locator.config
 
 run-test-wiring-service:
 	./tests/wiring-service.py --Ice.Config=config/locator.config WiringService

@@ -45,11 +45,12 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         self.trigger(self.seconds)
 
     def trigger(self, seconds, current=None):
-        if not self.observer:
-            logging.error("observer not set")
-            return
-
         recording = self.capture_audio(seconds)
+
+        if not self.observer:
+            logging.error("The clip couldn't be sent. Observer not set.")
+            return
+            
         self.observer.begin_notify(recording, self.place, self.metadata)
 
     def capture_audio(self, seconds, current=None):

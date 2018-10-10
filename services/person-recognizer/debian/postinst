@@ -3,8 +3,8 @@
 pip3 install opencv-python
 bash /usr/lib/person-recognizer/models/get-models.sh
 
+# git clone https://github.com/torch/distro.git $USER/torch --recursive
+# cd $USER/torch; bash install-deps;
+# ./install.sh
 
-#git clone https://github.com/torch/distro.git ~/torch --recursive
-#cd ~/torch; bash install-deps;
-#./install.sh
-
+echo "You must install torch from this web to run the service: http://torch.ch/docs/getting-started.html#_"

@@ -38,16 +38,18 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
                 logging.info(" - using default value: {}".format(default))
                 return default
             else:
-                raise NameError("Ice property '{}' is not set".format(key))
+                raise NameError("You must add the property '{}'".format(key))
         return retval
 
     def notify(self, data, source, metadata, current=None):
+        self.metadata = metadata
+        transcription = self.transcribe_audio(data)
+        logging.info("message: '{}'".format(transcription))
+        
         if not self.observer:
             logging.error("observer not set")
             return
 
-        self.metadata = metadata
-        transcription = self.transcribe_audio(data)
         self.observer.begin_notifyCommand(transcription, self.metadata)
         logging.info("message '{}' sent".format(transcription))
 

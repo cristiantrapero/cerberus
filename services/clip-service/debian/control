@@ -18,4 +18,4 @@ Depends:
  python3-numpy,
  libatlas-base-dev
 Description: Cerberus Clip Service
- This service records an audio file with a specific duration.
+ This service records an audio file (.wav) with a specific duration.

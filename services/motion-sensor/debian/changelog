@@ -1,3 +1,9 @@
+motion-sensor (0.20181010-1) unstable; urgency=low
+
+  * Minor changes
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 10 Oct 2018 13:29:59 +0200
+
 motion-sensor (0.20180523-1) unstable; urgency=low
 
   * New release

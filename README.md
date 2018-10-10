@@ -1,20 +1,19 @@
-### Plugable services repository, Icegrid applications and Scone knowledge.
+## Plugable services repository, Icegrid applications and Scone knowledge.
 
 The repository is structured as follows:
 
- - **services**: Plugable services.
+ - **config**: Icegrid applications and configuration files for dummy app.
+ - **deploy**: Icegrid applications for test and deploy system. The config files has been migrated to arco.provision repository.
  - **devices**: Embedded services in devices with its corresponding PlatformIO projects.
- - **scone-knowledge.d**: Scone knowledge for the plugable services.
- - **config**: Icegrid applications and config files.
- - **tests**: Unitary tests for Scone knowledge.
+ - **doc**: Invocation diagrams for the services and scheduler.
  - **install-dependencies.sh**: Bash script to install the services dependencies.
- - **scheduler**: Scheduler for setObservers
- - **deploy**: Vagran, Saltstack and config files to deploy cerberus in the smart office.
- - **utils**: Util services.
  - **Makefile**: To run cerberus dummy application.
-
-
-
+ - **scheduler**: Scheduler for setObservers between services
+ - **scone-knowledge.d**: Scone knowledge for the plugable services.
+ - **services**: Plugable services.
+ - **tests**: Unitary tests for Scone knowledge.
+ - **utils**: Util services.
+ 
 |      Services     | dummy | real | debian package |
 |:-----------------:|:-----:|:----:|:--------------:|
 | motion-sensor     |  yes  |  yes |       yes      |
@@ -28,4 +27,11 @@ The repository is structured as follows:
 | simulate_motion   |  yes  |  no  |       no       |
 
 **To execute the real services it is necessary to have access tokens to the IBM speech to text and Dialogflow APIs.**
-There are some default credentials created by Cristian. Look up in the authenticator and speech to text services **config files**.
+There are some default credentials created by Cristian:
+
+#### Speech to text:
+ - SpeechToText.IBMusername = **beddfe97-4bb8-4745-a19a-32e439e04577**
+ - SpeechToText.IBMpassword = **0OqAwO8uYIjV**
+
+#### Authenticator:
+ - Authenticator.DialogflowToken = **aedd62ed20ba4697b39d214b7d727c16**

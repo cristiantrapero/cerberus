@@ -6,7 +6,7 @@ import Ice
 Ice.loadSlice('-I {0} {0}/dharma/scone-wrapper.ice --all'.format('/usr/share/slice'))
 import Semantic  # noqa
 Ice.loadSlice('-I {0} {0}/citisim/wiring.ice --all'.format('/usr/share/slice'))
-import SmartObject
+import SmartServices
 
 
 class Client(Ice.Application):
@@ -29,7 +29,7 @@ class Client(Ice.Application):
 
     def get_wiring_service(self, proxy):
         proxy = self.communicator().stringToProxy(proxy)
-        wiringPrx = SmartObject.WiringServicePrx.checkedCast(proxy)
+        wiringPrx = SmartServices.WiringServicePrx.checkedCast(proxy)
         if not wiringPrx:
             raise RuntimeError('Invalid proxy')
         return wiringPrx
@@ -111,7 +111,7 @@ class Client(Ice.Application):
     def connect(self, observable, observer):
         a = observable.split()[0]
         b = observer.split()[0]
-        print("connect '{}' -> '{}'".format(observable, observer))
+        print("connect '{}' -> '{}'".format(a, b))
 
         self.wiring_service.addObserver(observable, observer)
 

@@ -16,7 +16,7 @@ class ActuatorI(SmartObject.EventSink):
         self.properties = properties
         super(self.__class__, self).__init__()
 
-    def notify(self, source, metadata, current=None):
+    def notify(self, eventName, source, metadata, current=None):
         eventTimestamp = int(metadata.get(MetadataField.Timestamp))
         ttl = int(self.properties.getProperty('DoorActuator.TTL'))
 

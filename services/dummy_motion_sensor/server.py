@@ -28,7 +28,7 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
             place = 'ITSI first floor corridor'
         ).to_dict()
 
-        self.observer.begin_notify('ITSI corridor camera', metadata)
+        self.observer.begin_notify('movement detected', 'ITSI corridor camera', metadata)
         print('motion detected on ITSI first floor corridor')
 
 

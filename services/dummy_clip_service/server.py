@@ -18,7 +18,7 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         self.recordTime = int(properties.getProperty('ClipService.RecordTime'))
         super(self.__class__, self).__init__()
 
-    def notify(self, source, metadata, current=None):
+    def notify(self, eventName, source, metadata, current=None):
         self.metadata = metadata
         self.trigger(self.recordTime)
 

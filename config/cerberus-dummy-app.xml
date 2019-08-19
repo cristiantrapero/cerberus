@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
-   <application name="Access Control Service">
+   <application name="Dummy Access Control Service">
       <service-template id="IceStorm">
          <parameter name="instance-name" default="${application}.IceStorm"/>
          <parameter name="topic-manager-endpoints" default="default"/>
@@ -127,7 +127,7 @@
             <properties>
                <property name="Ice.StdOut" value="/tmp/cerberus/icebox.out"/>
                <property name="Ice.StdErr" value="/tmp/cerberus/icebox.err"/>
-               <property name="Icebox.PrintServicesReady" value="IceStorm"/>
+               <property name="IceBox.PrintServicesReady" value="IceStorm"/>
             </properties>
             <service name="IceStorm" entry="IceStormService,36:createIceStorm">
                <properties>
@@ -167,10 +167,10 @@
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/property-service.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/property-service.out"/>
-               <property name="PropertyService.Data" value="/tmp/cerberus/db/property-service"/>
+               <property name="PropertyServer.Data" value="/tmp/cerberus/db/property-service"/>
                <property name="Ice.ThreadPool.Server.Size" value="10"/>
             </properties>
-            <adapter name="PropertyServiceAdapter" endpoints="default" id="${server}.PropertyServiceAdapter">
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="PropertyServer"/>
             </adapter>
          </server>
@@ -205,15 +205,15 @@
                <object identity="speech-to-text"/>
             </adapter>
          </server>
-         <server id="WiringService" activation="always" exe="citisim-wiring">
+         <server id="WiringServer" activation="always" exe="citisim-wiring">
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/wiring-service.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/wiring-service.out"/>
                <property name="IceStorm.TopicManager.Proxy" value="IceStorm/TopicManager"/>
-               <property name="PropertyService.Proxy" value="PropertyServer"/>
+               <property name="PropertyServer.Proxy" value="PropertyServer"/>
             </properties>
-            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
-               <object identity="WiringService"/>
+            <adapter name="Wiring.Adapter" endpoints="default" id="${server}.Wiring.Adapter">
+               <object identity="WiringServer"/>
             </adapter>
          </server>
       </node>

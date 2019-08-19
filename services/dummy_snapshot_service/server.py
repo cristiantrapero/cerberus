@@ -18,7 +18,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
         self.properties = properties
         super(self.__class__, self).__init__()
 
-    def notify(self, source, metadata, current=None):
+    def notify(self, eventName, source, metadata, current=None):
         self.metadata = metadata
         self.trigger(int(self.properties.getProperty('SnapshotService.Snapshots')),
                      int(self.properties.getProperty('SnapshotService.Delay')))
@@ -32,7 +32,6 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
             fd = cv2.imread("./test-image.jpg")
             # Encode image to be sent as a message
             out, buf = cv2.imencode('.jpg', fd)
-
             self.observer.begin_notify(buf, "ISTI corridor camera", self.metadata)
             print("snapshot taken")
 

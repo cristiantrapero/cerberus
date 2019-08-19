@@ -4,10 +4,10 @@
 NODES=$(notdir $(basename $(shell ls config/node*.config | sort -r)))
 NODE_DIRS=$(addprefix /tmp/cerberus/db/, $(NODES))
 IG_ADMIN=icegridadmin --Ice.Config=config/locator.config -u user -p pass
-APP=Access Control Service
+APP=Dummy Access Control Service
 
 define GRID_STOP
-    @if netstat -lptn 2> /dev/null | grep ":4061" > /dev/null; then \
+    @if ss -lptn 2> /dev/null | grep ":4061" > /dev/null; then \
 	for node in $(NODES); do \
             $(IG_ADMIN) -e "node shutdown $$node"; \
 	done; \
@@ -42,12 +42,12 @@ grid-stop:
 
 app-add: app-rm
 	$(call WAIT_READY)
-	$(IG_ADMIN) -e "application add config/dummy-app.xml"
+	$(IG_ADMIN) -e "application add config/cerberus-dummy-app.xml"
 	@echo -- app \"$(APP)\" added ok;
 
 test-app-add: app-rm
 	$(call WAIT_READY)
-	$(IG_ADMIN) -e "application add deploy/cerberus-test.xml"
+	$(IG_ADMIN) -e "application add deploy/cerberus-test-app.xml"
 	@echo -- app \"$(APP)\" added ok;
 
 app-rm:
@@ -63,7 +63,7 @@ show-nodes:
 	$(IG_ADMIN) -e "node list"
 
 run-scheduler:
-	./scheduler/scheduler.py --Ice.Config=config/locator.config scone WiringService
+	./scheduler/scheduler.py --Ice.Config=config/locator.config scone WiringServer
 
 simulate-motion:
 	./utils/simulate-motion.py --Ice.Config=config/locator.config

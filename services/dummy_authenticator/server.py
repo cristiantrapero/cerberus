@@ -43,7 +43,7 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
                     placeCommand = self.metadata_command.get(MetadataField.Place)
                     placePersonID = self.metadata_personID.get(MetadataField.Place)
                     if placeCommand == placePersonID:
-                        self.observer.begin_notify(placeCommand, self.metadata_personID)
+                        self.observer.begin_notify("authorized person", placeCommand, self.metadata_personID)
                         print("{} authorized to {}".format(self.personID, self.command))
                         self.command = None
                         self.personID = None

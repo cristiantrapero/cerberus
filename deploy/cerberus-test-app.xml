@@ -98,7 +98,7 @@
             <properties>
                <property name="Ice.StdOut" value="/tmp/cerberus/authenticator.out"/>
                <property name="Ice.StdErr" value="/tmp/cerberus/authenticator.err"/>
-               <property name="Authenticator.Database" value="/usr/lib/authenticator/authorized_people.csv"/>
+               <property name="Authenticator.Database" value="authorized_people.csv"/>
                <property name="Authenticator.DialogflowToken" value="aedd62ed20ba4697b39d214b7d727c16"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
@@ -122,7 +122,7 @@
             <properties>
                <property name="Ice.StdOut" value="/tmp/cerberus/icebox.out"/>
                <property name="Ice.StdErr" value="/tmp/cerberus/icebox.err"/>
-               <property name="Icebox.PrintServicesReady" value="IceStorm"/>
+               <property name="IceBox.PrintServicesReady" value="IceStorm"/>
             </properties>
             <service name="IceStorm" entry="IceStormService,36:createIceStorm">
                <properties>
@@ -143,7 +143,7 @@
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/motion_sensor.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/motion_sensor.out"/>
-               <property name="MotionSensor.MonitoredDirectory" value="/home/cristian/Descargas"/>
+               <property name="MotionSensor.MonitoredDirectory" value="/tmp/ftp"/>
                <property name="MotionSensor.Quality" value="255"/>
                <property name="MotionSensor.Expiration" value="30"/>
                <property name="MotionSensor.Latitude" value="38.99793"/>
@@ -160,9 +160,9 @@
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/person_recognizer.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/person_recognizer.out"/>
-               <property name="PersonRecognizer.ClassifierModel" value="/usr/lib/person-recognizer/models/openface/celeb-classifier.nn4.small2.v1.pkl"/>
-               <property name="PersonRecognizer.PredictionFaceModel" value="/usr/lib/person-recognizer/models/dlib/shape_predictor_68_face_landmarks.dat"/>
-               <property name="PersonRecognizer.TorchModel" value="/usr/lib/person-recognizer/models/openface/nn4.small2.v1.t7"/>
+               <property name="PersonRecognizer.ClassifierModel" value="./models/openface/celeb-classifier.nn4.small2.v1.pkl"/>
+               <property name="PersonRecognizer.PredictionFaceModel" value="./models/dlib/shape_predictor_68_face_landmarks.dat"/>
+               <property name="PersonRecognizer.TorchModel" value="./models/openface/nn4.small2.v1.t7"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="person-recognizer"/>
@@ -172,10 +172,10 @@
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/property-service.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/property-service.out"/>
-               <property name="PropertyService.Data" value="/tmp/cerberus/db/property-service"/>
+               <property name="PropertyServer.Data" value="/tmp/cerberus/db/property-service"/>
                <property name="Ice.ThreadPool.Server.Size" value="10"/>
             </properties>
-            <adapter name="PropertyServiceAdapter" endpoints="default" id="${server}.PropertyServiceAdapter">
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="PropertyServer"/>
             </adapter>
          </server>
@@ -210,23 +210,23 @@
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/speech_to_text.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/speech_to_text.out"/>
-               <property name="SpeechToText.IBMusername" value="d73b4cd2-01fc-48e4-ac6a-49392dae1106"/>
-               <property name="SpeechToText.IBMpassword" value="GVSGDGcjMR3f"/>
+               <property name="SpeechToText.URL" value="https://gateway-lon.watsonplatform.net/speech-to-text/api"/>
+               <property name="SpeechToText.APIKey" value="YajA1aReGIFhE0GtZMdhPmysvcm82DrI901L5FOM0Jp7"/>
                <property name="SpeechToText.Directory" value="/tmp/"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="speech-to-text"/>
             </adapter>
          </server>
-         <server id="WiringService" activation="always" exe="citisim-wiring">
+         <server id="WiringServer" activation="always" exe="citisim-wiring">
             <properties>
                <property name="Ice.StdErr" value="/tmp/cerberus/wiring-service.err"/>
                <property name="Ice.StdOut" value="/tmp/cerberus/wiring-service.out"/>
                <property name="IceStorm.TopicManager.Proxy" value="IceStorm/TopicManager"/>
-               <property name="PropertyService.Proxy" value="PropertyServer"/>
+               <property name="PropertyServer.Proxy" value="PropertyServer"/>
             </properties>
-            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
-               <object identity="WiringService"/>
+            <adapter name="Wiring.Adapter" endpoints="default" id="${server}.Wiring.Adapter">
+               <object identity="WiringServer"/>
             </adapter>
          </server>
       </node>

@@ -40,7 +40,7 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
                 raise NameError("Ice property '{}' is not set".format(key))
         return retval
 
-    def notify(self, source, data, current=None):
+    def notify(self, eventName, source, data, current=None):
         self.metadata = data
         self.trigger(self.seconds)
 

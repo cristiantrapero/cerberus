@@ -34,8 +34,8 @@ The repository is structured as follows:
 There are some default credentials created by Cristian:
 
 #### Speech to text:
- - SpeechToText.IBMusername = **beddfe97-4bb8-4745-a19a-32e439e04577**
- - SpeechToText.IBMpassword = **0OqAwO8uYIjV**
+ - SpeechToText.APIKey = **YajA1aReGIFhE0GtZMdhPmysvcm82DrI901L5FOM0Jp7**
+ - SpeechToText.URL = **https://gateway-lon.watsonplatform.net/speech-to-text/api**
 
 #### Authenticator:
  - Authenticator.DialogflowToken = **aedd62ed20ba4697b39d214b7d727c16**

@@ -21,16 +21,12 @@ sudo apt-get install -y citisim-slice libcitisim citisim-wiring-server
 sudo -H pip3 install --upgrade pip
 
 # Install openface
-if python3 -c "import openface" &> /dev/null; then
-    echo 'Openface is installed.'
-else
-    # Clone openface repository
-    git clone --recursive https://github.com/cmusatyalab/openface.git $OPENFACE
-    # Install openface
-    cd $OPENFACE
-    sudo pip3 install -r requirements.txt
-    sudo python3 setup.py install
-fi
+# Clone openface repository
+git clone --recursive https://github.com/cmusatyalab/openface.git $OPENFACE
+# Install openface
+cd $OPENFACE
+sudo pip3 install -r requirements.txt
+sudo python3 setup.py install
 
 # Install opencv for Python3
 sudo pip3 install opencv-python

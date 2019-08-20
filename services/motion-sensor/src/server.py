@@ -70,7 +70,7 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
             altitude=self.altitude,
             place=self.place).to_dict()
 
-        self.observer.begin_notify(self.place, data)
+        self.observer.begin_notify("movement detected", self.place, data)
         logging.info('motion detected on {}'.format(self.place))
 
 

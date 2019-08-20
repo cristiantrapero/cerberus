@@ -43,7 +43,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
                 raise NameError("You must add the property '{}'".format(key))
         return retval
 
-    def notify(self, source, metadata, current=None):
+    def notify(self, eventName, source, metadata, current=None):
         self.metadata = metadata
         self.trigger(self.snapshots, self.delay)
 
@@ -51,6 +51,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
         for i in range(snapshots):
             
             try:
+                # This only works for Foscam IP Camera
                 url_snapshot = "http://{}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr={}&pwd={}".format(self.cameraIP, self.cameraUser, self.cameraPass)
                 urllib.request.urlretrieve(url_snapshot, "{}/snapshot.jpg".format(self.directory))
             except urllib.error.URLError:

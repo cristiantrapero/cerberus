@@ -25,8 +25,8 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
     def __init__(self, properties):
         self.metadata = None
         self.properties = properties
-        self.IBMusername = str(self.get_property("SpeechToText.IBMusername"))
-        self.IBMpassword = str(self.get_property("SpeechToText.IBMpassword"))
+        self.APIKey = str(self.get_property("SpeechToText.APIKey"))
+        self.URL = str(self.get_property("SpeechToText.URL"))
         self.directory = abspath(str(self.get_property("SpeechToText.Directory")))
         super(self.__class__, self).__init__()
 
@@ -44,7 +44,6 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
     def notify(self, data, source, metadata, current=None):
         self.metadata = metadata
         transcription = self.transcribe_audio(data)
-        logging.info("message: '{}'".format(transcription))
         
         if not self.observer:
             logging.error("observer not set")
@@ -56,9 +55,8 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
     def transcribe_audio(self, data):
         # Credentials IBM service
         speech_to_text = SpeechToTextV1(
-            username=self.IBMusername,
-            password=self.IBMpassword,
-            url='https://stream.watsonplatform.net/speech-to-text/api')
+            iam_apikey=self.APIKey,
+            url=self.URL)
 
         audio = np.fromstring(data, np.int16)
 
@@ -69,11 +67,15 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         scipy.io.wavfile.write('{}/command.wav'.format(self.directory), 44100, audio)
 
         with open(join(dirname(__file__), '{}/command.wav'.format(self.directory)), 'rb') as audio_file:
-            response = json.dumps(speech_to_text.recognize(
-                audio=audio_file,
-                content_type='audio/wav',
-                model='es-ES_BroadbandModel'),
-                indent=2, ensure_ascii=False)
+            try:
+                response = json.dumps(speech_to_text.recognize(
+                    audio=audio_file,
+                    content_type='audio/wav',
+                    model='es-ES_BroadbandModel').get_result(),
+                    indent=2, ensure_ascii=False)
+            except TypeError as err:
+                logging.info(err)
+                return
 
             try:
                 transcript = json.loads(response)["results"][0]["alternatives"][0]["transcript"]

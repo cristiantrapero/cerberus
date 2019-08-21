@@ -6,5 +6,6 @@ bash /usr/lib/person-recognizer/models/get-models.sh
 # git clone https://github.com/torch/distro.git $USER/torch --recursive
 # cd $USER/torch; bash install-deps;
 # ./install.sh
+# for NAME in dpnn nn optim optnet csvigo cutorch cunn fblualib torchx tds; do luarocks install $NAME; done
 
 echo "You must install torch from this web to run the service: http://torch.ch/docs/getting-started.html#_"

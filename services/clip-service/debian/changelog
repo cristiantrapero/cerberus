@@ -1,3 +1,11 @@
+clip-service (0.20190821-1) unstable; urgency=low
+
+  * Minor changes.
+  * Set gpio 22 output command
+  * Adapt to the new iot.ice interface
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 11:02:49 +0200
+
 clip-service (0.20180524-1) unstable; urgency=low
 
   * New release

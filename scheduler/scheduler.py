@@ -30,6 +30,7 @@ class Client(Ice.Application):
     def get_wiring_service(self, proxy):
         proxy = self.communicator().stringToProxy(proxy)
         wiringPrx = SmartServices.WiringServicePrx.checkedCast(proxy)
+        print(wiringPrx)
         if not wiringPrx:
             raise RuntimeError('Invalid proxy')
         return wiringPrx
@@ -111,6 +112,9 @@ class Client(Ice.Application):
     def connect(self, observable, observer):
         a = observable.split()[0]
         b = observer.split()[0]
+        # print(observable)
+        # print(observer)
+
         print("connect '{}' -> '{}'".format(a, b))
 
         self.wiring_service.addObserver(observable, observer)

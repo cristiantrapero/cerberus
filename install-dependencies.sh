@@ -15,7 +15,7 @@ sudo apt-get install -y python3-zeroc-ice zeroc-ice36
 sudo apt-get install -y scone scone-server scone-wrapper
 
 # Install citisim libraries
-sudo apt-get install -y citisim-slice libcitisim citisim-wiring-server
+sudo apt-get install -y citisim-slice libcitisim citisim-wiring-server property-service-simple
 
 # Upgrade pip3
 sudo -H pip3 install --upgrade pip

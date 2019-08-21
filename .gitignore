@@ -1,6 +1,7 @@
 *~
 .scone
 *.pyc
+*.upload
 *.buildinfo
 *.small2.v1.pkl
 *.small2.v1.t7

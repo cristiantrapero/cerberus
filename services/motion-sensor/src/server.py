@@ -97,7 +97,7 @@ class Server(Ice.Application):
         try:
             monitor.start()
         except OSError:
-            logging.error("MonitoredDirectory property is not correct directory.")
+            logging.error("MonitoredDirectory property is not a correct directory.")
             return 1
 
         proxy = citisim.remove_private_endpoints(proxy)

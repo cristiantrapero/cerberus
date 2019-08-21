@@ -1,3 +1,10 @@
+person-recognizer (0.20190821-1) unstable; urgency=low
+
+  * Minor changes
+  * Adapt to the new iot.ice interface
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 11:20:18 +0200
+
 person-recognizer (0.20180524-1) unstable; urgency=low
 
   * New release

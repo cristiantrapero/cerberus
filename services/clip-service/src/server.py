@@ -67,6 +67,7 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
 
     def ring_buzzer(self, current=None):
         if os.uname()[1] == 'cerberus-rpi':
+            subprocess.call(['gpio -g mode 22 out'])
             subprocess.call(['gpio -g write 22 1'])
             time.sleep(0.5)
             subprocess.call(['gpio -g write 22 0'])

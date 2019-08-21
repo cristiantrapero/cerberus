@@ -195,7 +195,7 @@
                <property name="Ice.StdOut" value="/tmp/cerberus/snapshot_service.out"/>
                <property name="SnapshotService.Snapshots" value="1"/>
                <property name="SnapshotService.Delay" value="0"/>
-               <property name="SnapshotService.CameraIP" value="161.67.106.69"/>
+               <property name="SnapshotService.CameraIP" value="161.67.106.15"/>
                <property name="SnapshotService.CameraUser" value="arco"/>
                <property name="SnapshotService.CameraPass" value="ARCOcamC1."/>
                <property name="SnapshotService.Place" value="ITSI-corridor"/>

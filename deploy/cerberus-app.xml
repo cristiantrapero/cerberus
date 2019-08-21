@@ -93,7 +93,7 @@
       </server-template>
       <node name="cerberus">
          <description>Services that run in pike node.</description>
-         <server id="AuthenticatedCommandService" activation="manual" exe="authenticator">
+         <server id="AuthenticatedCommandService" activation="always" exe="authenticator">
             <properties>
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6070"/>
                <property name="Ice.StdOut" value="${server.distrib}/authenticator.out"/>
@@ -101,11 +101,11 @@
                <property name="Authenticator.Database" value="/usr/lib/authenticator/authorized_people.csv"/>
                <property name="Authenticator.DialogflowToken" value="aedd62ed20ba4697b39d214b7d727c16"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 6070" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 6070" id="${server}.Adapter">
                <object identity="authenticator"/>
             </adapter>
          </server>
-         <icebox id="IceBox" activation="manual" exe="icebox">
+         <icebox id="IceBox" activation="always" exe="icebox">
             <properties>
                <property name="Ice.StdOut" value="${server.distrib}/icebox.out"/>
                <property name="Ice.StdErr" value="${server.distrib}/icebox.err"/>
@@ -125,7 +125,7 @@
                </adapter>
             </service>
          </icebox>
-         <server id="MotionSensor" activation="manual" exe="motion-sensor">
+         <server id="MotionSensor" activation="always" exe="motion-sensor">
             <description>Set the FTP directory that storages the Camera Snapshots in the MonitoredDirectory property.</description>
             <properties>
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6066"/>
@@ -143,7 +143,7 @@
                <object identity="motion-sensor"/>
             </adapter>
          </server>
-         <server id="PersonRecognizer" activation="manual" exe="person-recognizer">
+         <server id="PersonRecognizer" activation="always" exe="person-recognizer">
             <properties>
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6068"/>
                <property name="Ice.StdErr" value="${server.distrib}/person_recognizer.err"/>
@@ -152,18 +152,18 @@
                <property name="PersonRecognizer.PredictionFaceModel" value="/usr/lib/person-recognizer/models/dlib/shape_predictor_68_face_landmarks.dat"/>
                <property name="PersonRecognizer.TorchModel" value="/usr/lib/person-recognizer/models/openface/nn4.small2.v1.t7"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 6068" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 6068" id="${server}.Adapter">
                <object identity="person-recognizer"/>
             </adapter>
          </server>
-         <server id="PropertyServer" activation="manual" exe="property-server">
+         <server id="PropertyServer" activation="always" exe="property-server">
             <properties>
                <property name="Ice.StdErr" value="${server.distrib}/property-service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/property-service.out"/>
-               <property name="PropertyService.Data" value="${server.distrib}/db/property-service"/>
+               <property name="PropertyServer.Data" value="${server.distrib}/db/property-service"/>
                <property name="Ice.ThreadPool.Server.Size" value="10"/>
             </properties>
-            <adapter name="PropertyServiceAdapter" endpoints="default" id="${server}.PropertyServiceAdapter">
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="PropertyServer"/>
             </adapter>
          </server>
@@ -173,64 +173,65 @@
                <property name="Ice.StdOut" value="${server.distrib}/scone.out"/>
                <property name="Ice.StdErr" value="${server.distrib}/scone.err"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 6064" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 6064" id="${server}.Adapter">
                <object identity="scone"/>
             </adapter>
          </server>
-         <server id="SnapshotService" activation="manual" exe="snapshot-service">
+         <server id="SnapshotService" activation="always" exe="snapshot-service">
             <properties>
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6067"/>
                <property name="Ice.StdErr" value="${server.distrib}/snapshot_service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/snapshot_service.out"/>
                <property name="SnapshotService.Snapshots" value="1"/>
                <property name="SnapshotService.Delay" value="0"/>
-               <property name="SnapshotService.CameraIP" value="161.67.106.69"/>
+               <property name="SnapshotService.CameraIP" value="161.67.106.15"/>
                <property name="SnapshotService.CameraUser" value="arco"/>
                <property name="SnapshotService.CameraPass" value="ARCOcamC1."/>
                <property name="SnapshotService.Place" value="ITSI-corridor"/>
                <property name="SnapshotService.Directory" value="/tmp/cerberus/"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 6067" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 6067" id="${server}.Adapter">
                <object identity="snapshot-service"/>
             </adapter>
          </server>
-         <server id="SpeechToText" activation="manual" exe="speech-to-text">
+         <server id="SpeechToText" activation="always" exe="speech-to-text">
             <properties>
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6069"/>
                <property name="Ice.StdErr" value="${server.distrib}/speech_to_text.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/speech_to_text.out"/>
-               <property name="SpeechToText.IBMusername" value="d73b4cd2-01fc-48e4-ac6a-49392dae1106"/>
-               <property name="SpeechToText.IBMpassword" value="GVSGDGcjMR3f"/>
+               <property name="SpeechToText.APIKey" value="YajA1aReGIFhE0GtZMdhPmysvcm82DrI901L5FOM0Jp7"/>
+               <property name="SpeechToText.URL" value="https://gateway-lon.watsonplatform.net/speech-to-text/api"/>
                <property name="SpeechToText.Directory" value="${server.distrib}"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 6069" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 6069" id="${server}.Adapter">
                <object identity="speech-to-text"/>
             </adapter>
          </server>
-         <server id="WiringService" activation="manual" exe="citisim-wiring">
+         <server id="WiringService" activation="always" exe="citisim-wiring">
             <properties>
-               <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6065"/>
+               <property name="Wiring.Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6065"/>
                <property name="Ice.StdErr" value="${server.distrib}/wiring-service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/wiring-service.out"/>
                <property name="IceStorm.TopicManager.Proxy" value="IceStorm/TopicManager"/>
-               <property name="PropertyService.Proxy" value="PropertyServer"/>
+               <property name="PropertyServer.Proxy" value="PropertyServer"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 6065" id="${server}.Adapter">
-               <object identity="WiringService"/>
+            <adapter name="Wiring.Adapter" endpoints="tcp -p 6065" id="${server}.Wiring.Adapter">
+               <object identity="WiringServer"/>
             </adapter>
          </server>
       </node>
       <node name="cerberus-rpi">
          <description>Services that run in the rpi.</description>
-         <server id="ClipService" activation="manual" exe="clip-service">
+         <server id="ClipService" activation="always" exe="clip-service">
             <properties>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h localhost -p 6000"/>
                <property name="Ice.StdErr" value="${server.distrib}/clip_service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/clip_service.out"/>
                <property name="ClipService.Seconds" value="5"/>
                <property name="ClipService.Place" value="ITSI-corridor"/>
                <property name="ClipService.Directory" value="${server.distrib}"/>
             </properties>
-            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 6000" id="${server}.Adapter">
                <object identity="clip-service"/>
             </adapter>
          </server>

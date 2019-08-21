@@ -1,3 +1,16 @@
+motion-sensor (0.20190821-1) unstable; urgency=low
+
+  * Minor changes
+  * Adapt to the new iot.ice interface
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 10:51:48 +0200
+
+motion-sensor (0.20181011-1) unstable; urgency=low
+
+  * New release
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 10:50:57 +0200
+
 motion-sensor (0.20181010-1) unstable; urgency=low
 
   * Minor changes

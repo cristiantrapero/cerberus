@@ -1,3 +1,10 @@
+clip-service (0.20190826-1) unstable; urgency=low
+
+  * New release.
+  * Add soundcard property
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Mon, 26 Aug 2019 14:13:48 +0200
+
 clip-service (0.20190821.1-1) unstable; urgency=low
 
   * Fixed adapter

@@ -131,7 +131,7 @@
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6066"/>
                <property name="Ice.StdErr" value="${server.distrib}/motion_sensor.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/motion_sensor.out"/>
-               <property name="MotionSensor.MonitoredDirectory" value="/tmp/"/>
+               <property name="MotionSensor.MonitoredDirectory" value="/tmp/ftp"/>
                <property name="MotionSensor.Quality" value="255"/>
                <property name="MotionSensor.Expiration" value="30"/>
                <property name="MotionSensor.Latitude" value="38.99793"/>
@@ -139,7 +139,7 @@
                <property name="MotionSensor.Altitude" value="637.10"/>
                <property name="MotionSensor.Place" value="ITSI-corridor"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -h pike.esi.uclm.es -p 6066" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 6066" id="${server}.Adapter">
                <object identity="motion-sensor"/>
             </adapter>
          </server>
@@ -160,14 +160,14 @@
             <properties>
                <property name="Ice.StdErr" value="${server.distrib}/property-service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/property-service.out"/>
-               <property name="PropertyServer.Data" value="${server.distrib}/db/property-service"/>
+               <property name="PropertyServer.Data" value="${server.distrib}/db.json"/>
                <property name="Ice.ThreadPool.Server.Size" value="10"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="PropertyServer"/>
             </adapter>
          </server>
-         <server id="SconeWrapper" activation="manual" exe="/usr/bin/scone-wrapper" pwd="/var/lib/ice/icegrid/node1/cerberus">
+         <server id="SconeWrapper" activation="always" exe="/usr/bin/scone-wrapper" pwd="/var/lib/ice/icegrid/node1/cerberus">
             <properties>
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6064"/>
                <property name="Ice.StdOut" value="${server.distrib}/scone.out"/>
@@ -188,7 +188,7 @@
                <property name="SnapshotService.CameraUser" value="arco"/>
                <property name="SnapshotService.CameraPass" value="ARCOcamC1."/>
                <property name="SnapshotService.Place" value="ITSI-corridor"/>
-               <property name="SnapshotService.Directory" value="/tmp/cerberus/"/>
+               <property name="SnapshotService.Directory" value="/tmp/"/>
             </properties>
             <adapter name="Adapter" endpoints="tcp -p 6067" id="${server}.Adapter">
                <object identity="snapshot-service"/>
@@ -224,14 +224,14 @@
          <description>Services that run in the rpi.</description>
          <server id="ClipService" activation="always" exe="clip-service">
             <properties>
-               <property name="Adapter.PublishedEndpoints" value="tcp -h localhost -p 6000"/>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h cerberus-rpi.uclm.es -p 2020"/>
                <property name="Ice.StdErr" value="${server.distrib}/clip_service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/clip_service.out"/>
                <property name="ClipService.Seconds" value="5"/>
                <property name="ClipService.Place" value="ITSI-corridor"/>
                <property name="ClipService.Directory" value="${server.distrib}"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -p 6000" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 2020" id="${server}.Adapter">
                <object identity="clip-service"/>
             </adapter>
          </server>

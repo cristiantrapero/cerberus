@@ -41,7 +41,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 
     def notify(self, data, source, metadata, current=None):
         if not self.observer:
-            logging.error("observer not set")
+            logging.error("Observer not established")
             return
 
         self.metadata = metadata
@@ -52,7 +52,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         # Get the id of the person
         person_id = self.recognize_person(snapshot)
         self.observer.begin_notifyPerson(person_id, self.metadata)
-        logging.info("identified person as {}".format(person_id))
+        logging.info("Identified person as {}".format(person_id))
 
     def recognize_person(self, data, current=None):
         with open(self.classifier_model, 'rb') as f:
@@ -73,7 +73,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
             landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
 
         if aligned_face is None:
-            logging.error("No face detected.\n")
+            logging.info("No face detected.\n")
             return None
 
         net = openface.TorchNeuralNet(self.torch_model, imgDim=96, cuda=False)
@@ -88,7 +88,7 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
         person_id = person.decode('utf-8')
 
         if confidence > 0.60:
-            logging.info("Identified person: {} with {} confidence.".format(person_id, confidence))
+            logging.info("Identified person {} with {} confidence.".format(person_id, confidence))
             return person_id
         else:
             logging.info("Unknown person. Estimated: {} with {} confidence.".format(person_id, confidence))
@@ -98,19 +98,19 @@ class PersonRecognizerI(citisim.ObservableMixin, SmartObject.PersonRecognizer):
 
 class Server(Ice.Application):
     def run(self, argv):
-        broker = self.communicator()
-        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
-        properties = broker.getProperties()
+        ice = self.communicator()
+        adapter = ice.createObjectAdapter("Adapter")
+        properties = ice.getProperties()
+        adapter.activate()
 
         servant = PersonRecognizerI(properties)
-        proxy = adapter.add(servant, broker.stringToIdentity("person-recognizer"))
+        proxy = adapter.add(servant, ice.stringToIdentity("person-recognizer"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        logging.info("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready: '{}'".format(proxy))
 
-        adapter.activate()
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        ice.waitForShutdown()
 
         return 0
 

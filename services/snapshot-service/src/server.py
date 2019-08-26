@@ -67,7 +67,7 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
                 return 
 
             if not self.observer:
-                logging.error("The image couldn't be sent. Observer not set to snapshot service.")
+                logging.error("The image couldn't be sent. Observer not established.")
                 return
 
             self.observer.begin_notify(buf, self.place, self.metadata)
@@ -78,19 +78,19 @@ class SnapshotServiceI(citisim.ObservableMixin, SmartObject.SnapshotService):
 
 class Server(Ice.Application):
     def run(self, args):
-        broker = self.communicator()
-        properties = broker.getProperties()
-        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        ice = self.communicator()
+        properties = ice.getProperties()
+        adapter = ice.createObjectAdapter("Adapter")
+        adapter.activate()
 
         servant = SnapshotServiceI(properties)
-        proxy = adapter.add(servant, broker.stringToIdentity("snapshot-service"))
+        proxy = adapter.add(servant, ice.stringToIdentity("snapshot-service"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        logging.info("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready: '{}'".format(proxy))
 
-        adapter.activate()
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        ice.waitForShutdown()
 
         return 0
 

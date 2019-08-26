@@ -1,3 +1,9 @@
+speech-to-text (0.20190821.1-1) unstable; urgency=low
+
+  * Fixed adapter
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 14:12:14 +0200
+
 speech-to-text (0.20190821-1) unstable; urgency=low
 
   * Minor changes

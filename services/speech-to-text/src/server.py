@@ -46,11 +46,11 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
         transcription = self.transcribe_audio(data)
         
         if not self.observer:
-            logging.error("observer not set")
+            logging.error("Observer not established")
             return
 
         self.observer.begin_notifyCommand(transcription, self.metadata)
-        logging.info("message '{}' sent".format(transcription))
+        logging.info("Message sent: '{}'".format(transcription))
 
     def transcribe_audio(self, data):
         # Credentials IBM service
@@ -87,19 +87,19 @@ class SpeechToTextI(citisim.ObservableMixin, SmartObject.SpeechToText):
 
 class Server(Ice.Application):
     def run(self, argv):
-        broker = self.communicator()
-        properties = broker.getProperties()
-        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        ice = self.communicator()
+        properties = ice.getProperties()
+        adapter = ice.createObjectAdapter("Adapter")
+        adapter.activate()
 
         servant = SpeechToTextI(properties)
-        proxy = adapter.add(servant, broker.stringToIdentity("speech-to-text"))
+        proxy = adapter.add(servant, ice.stringToIdentity("speech-to-text"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        logging.info("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready: '{}'".format(proxy))
 
-        adapter.activate()
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        ice.waitForShutdown()
 
         return 0
 

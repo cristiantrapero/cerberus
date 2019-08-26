@@ -1,3 +1,9 @@
+person-recognizer (0.20190821.1-1) unstable; urgency=low
+
+  * Fixed adapter
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 14:23:05 +0200
+
 person-recognizer (0.20190821-1) unstable; urgency=low
 
   * Minor changes

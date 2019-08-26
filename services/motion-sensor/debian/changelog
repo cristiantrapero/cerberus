@@ -1,3 +1,15 @@
+motion-sensor (0.20190821.2-1) unstable; urgency=low
+
+  * Minor changes
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 13:59:54 +0200
+
+motion-sensor (0.20190821.1-1) unstable; urgency=low
+
+  * Fixed adapter
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 13:28:38 +0200
+
 motion-sensor (0.20190821-1) unstable; urgency=low
 
   * Minor changes

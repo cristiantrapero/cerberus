@@ -48,7 +48,7 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         recording = self.capture_audio(seconds)
 
         if not self.observer:
-            logging.error("The clip couldn't be sent. Observer not set.")
+            logging.error("The clip couldn't be sent. Observer not established.")
             return
             
         self.observer.begin_notify(recording, self.place, self.metadata)
@@ -75,19 +75,19 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
 
 class Server(Ice.Application):
     def run(self, args):
-        broker = self.communicator()
-        properties = broker.getProperties()
-        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        ice = self.communicator()
+        properties = ice.getProperties()
+        adapter = ice.createObjectAdapter("Adapter")
+        adapter.activate()
 
         servant = ClipServiceI(properties)
-        proxy = adapter.add(servant, broker.stringToIdentity("clip-service"))
+        proxy = adapter.add(servant, ice.stringToIdentity("clip-service"))
 
         proxy = citisim.remove_private_endpoints(proxy)
-        logging.info("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready: '{}'".format(proxy))
 
-        adapter.activate()
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        ice.waitForShutdown()
 
         return 0
 

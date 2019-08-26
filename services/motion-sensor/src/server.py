@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 import time
+import datetime
 
 import libcitisim as citisim
 from libcitisim import SmartObject
@@ -48,7 +49,7 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
     def get_property(self, key, default=None):
         retval = self.properties.getProperty(key)
         if retval is "":
-            logging.info("Warning: property '{}' not set!".format(key))
+            logging.info("Property '{}' not set!".format(key))
             if default is not None:
                 logging.info(" - using default value: {}".format(default))
                 return default
@@ -58,11 +59,14 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
 
     def notify(self, current=None):
         if not self.observer:
-            logging.error("observer not set to motion sensor")
+            logging.error("Observer not established")
             return
 
+        timestamp = time.time()
+        date = datetime.datetime.fromtimestamp(timestamp)
+
         data = citisim.MetadataHelper(
-            timestamp=time.time(),
+            timestamp=timestamp,
             quality=self.quality,
             expiration=self.expiration,
             latitude=self.latitude,
@@ -71,17 +75,18 @@ class MotionSensorI(citisim.ObservableMixin, SmartObject.Observable):
             place=self.place).to_dict()
 
         self.observer.begin_notify("movement detected", self.place, data)
-        logging.info('motion detected on {}'.format(self.place))
+        logging.info('Motion detected on {} at {}.'.format(self.place, date))
 
 
 class Server(Ice.Application):
     def run(self, args):
-        broker = self.communicator()
-        properties = broker.getProperties()
-        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        ice = self.communicator()
+        properties = ice.getProperties()
+        adapter = ice.createObjectAdapter("Adapter")
+        adapter.activate()  
 
         servant = MotionSensorI(properties)
-        proxy = adapter.add(servant, broker.stringToIdentity("motion-sensor"))
+        proxy = adapter.add(servant, ice.stringToIdentity("motion-sensor"))
 
         # Matches given patterns with file paths associated with occurring events.
         monitor = Observer()
@@ -97,15 +102,15 @@ class Server(Ice.Application):
         try:
             monitor.start()
         except OSError:
-            logging.error("MonitoredDirectory property is not a correct directory.")
+            logging.error("MonitoredDirectory property is not available. Check that this directory exists")
             return 1
 
         proxy = citisim.remove_private_endpoints(proxy)
-        logging.info("Server ready:\n'{}'".format(proxy))
+        logging.info("Server ready: '{}'".format(proxy))
+        logging.info("Monitored directory: {}".format(directory))
 
-        adapter.activate()
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        ice.waitForShutdown()
 
         return 0
 

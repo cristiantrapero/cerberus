@@ -1,3 +1,9 @@
+clip-service (0.20190821.1-1) unstable; urgency=low
+
+  * Fixed adapter
+
+ -- Cristian Trapero Mora <cristian.trapero@uclm.es>  Wed, 21 Aug 2019 14:08:19 +0200
+
 clip-service (0.20190821-1) unstable; urgency=low
 
   * Minor changes.

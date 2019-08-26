@@ -45,31 +45,31 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
     def notifyPerson(self, personID, metadata, current=None):
         self.metadata_personID = metadata
         self.personID = personID
-        logging.info("Person: {}".format(self.personID))
+        logging.info("Person to authorize: {}".format(self.personID))
         self.check_authorization()
 
     def notifyCommand(self, command, metadata, current=None):
         self.metadata_command = metadata
         if command != "":
             self.command = self.get_intention(command)
-        logging.info("Command: {}".format(self.command))
+        logging.info("Command to authorize: {}".format(self.command))
         self.check_authorization()
 
     def check_authorization(self, current=None):
         # If we have a command and a person identification
         if self.command is not None and self.personID is not None:
             if not self.observer:
-                logging.error("observer not set to authenticator service")
+                logging.error("Observer not established")
                 return
 
             if self.personID in self.authorized_people.keys():
                 if self.command in self.authorized_people.get(self.personID):
                     if self.metadata_command.get(MetadataField.Place) == self.metadata_personID.get(MetadataField.Place):
                         self.observer.begin_notify("authorized person", self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
-                        logging.info("{} authorized to: {}".format(self.personID, self.command))
+                        logging.info("Authorized {} to {}.".format(self.personID, self.command))
                         self.clean_variables()
             else:
-                logging.error("{} is not authorized person".format(self.personID))
+                logging.error("{} is not authorized.".format(self.personID))
                 self.clean_variables()
 
     def get_intention(self, command, current=None):
@@ -102,19 +102,19 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
 
 class Server(Ice.Application):
     def run(self, argv):
-        broker = self.communicator()
-        properties = broker.getProperties()
-        adapter = broker.createObjectAdapterWithEndpoints("Adapter", "tcp")
+        ice = self.communicator()
+        properties = ice.getProperties()
+        adapter = ice.createObjectAdapter("Adapter")
+        adapter.activate()
 
         servant = AuthenticatorI(properties)
-        proxy = adapter.add(servant, broker.stringToIdentity("authenticator"))
+        proxy = adapter.add(servant, ice.stringToIdentity("authenticator"))
 
         proxy = citisim.remove_private_endpoints(proxy)
         logging.info("Server ready:\n'{}'".format(proxy))
 
-        adapter.activate()
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        ice.waitForShutdown()
 
         return 0
 

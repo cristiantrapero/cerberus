@@ -7,6 +7,7 @@ import scipy.io.wavfile
 import numpy as np
 import time
 import os
+import datetime
 import Ice
 
 import libcitisim as citisim
@@ -27,6 +28,7 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         self.seconds = int(self.get_property('ClipService.Seconds'))
         self.place = str(self.get_property('ClipService.Place'))
         self.directory = os.path.abspath(str(self.get_property('ClipService.Directory')))
+        self.soundcard = int(self.get_property('ClipService.SoundCard'))
         super(self.__class__, self).__init__()
 
     def get_property(self, key, default=None):
@@ -50,27 +52,45 @@ class ClipServiceI(citisim.ObservableMixin, SmartObject.ClipService):
         if not self.observer:
             logging.error("The clip couldn't be sent. Observer not established.")
             return
-            
-        self.observer.begin_notify(recording, self.place, self.metadata)
+        
+        if recording is 1:
+            logging.error("Audio record couldn't be sent.")
+        else:
+            self.observer.begin_notify(recording, self.place, self.metadata)
+            logging.info("Audio record sent.")
+
 
     def capture_audio(self, seconds, current=None):
         # plughw is the sound card interface
-        self.ring_buzzer()
-        subprocess.call(["arecord", "-D", "plughw:0", "--duration", str(seconds), "-f", "cd", "{}/record.wav".format(self.directory)])
-        self.ring_buzzer()
+        timestamp = time.time()
+        date = datetime.datetime.fromtimestamp(timestamp)
+        logging.info("Start recording at {}.".format(date))
 
-        rate, samples = scipy.io.wavfile.read('{}/record.wav'.format(self.directory))
+        try:
+            self.ring_buzzer()
+            command = 'arecord -D plughw:{} --duration {} -f cd {}/record.wav'.format(self.soundcard, seconds, self.directory)
+            os.system(command)
+            self.ring_buzzer()
+        except:
+            logging.error("Unexpected error: {}".format(sys.exc_info()[0]))
+            return 1
 
-        # Convert audio as numpy array
-        audio = np.asarray(samples, dtype=np.int16)
-        return audio
+        try:
+            rate, samples = scipy.io.wavfile.read('{}/record.wav'.format(self.directory))
+            # Convert audio as numpy array
+            audio = np.asarray(samples, dtype=np.int16)
+            return audio
+        except:
+            logging.error("Unexpected error: {}".format(sys.exc_info()[0]))
+            return 1
+
 
     def ring_buzzer(self, current=None):
         if os.uname()[1] == 'cerberus-rpi':
-            subprocess.call(['gpio -g mode 22 out'])
-            subprocess.call(['gpio -g write 22 1'])
+            os.system('gpio -g mode 22 out')
+            os.system('gpio -g write 22 1')
             time.sleep(0.5)
-            subprocess.call(['gpio -g write 22 0'])
+            os.system('gpio -g write 22 0')
 
 
 class Server(Ice.Application):

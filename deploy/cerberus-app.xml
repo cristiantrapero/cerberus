@@ -109,7 +109,7 @@
             <properties>
                <property name="Ice.StdOut" value="${server.distrib}/icebox.out"/>
                <property name="Ice.StdErr" value="${server.distrib}/icebox.err"/>
-               <property name="Icebox.PrintServicesReady" value="IceStorm"/>
+               <property name="IceBox.PrintServicesReady" value="IceStorm"/>
             </properties>
             <service name="IceStorm" entry="IceStormService,36:createIceStorm">
                <properties>
@@ -224,14 +224,15 @@
          <description>Services that run in the rpi.</description>
          <server id="ClipService" activation="always" exe="clip-service">
             <properties>
-               <property name="Adapter.PublishedEndpoints" value="tcp -h cerberus-rpi.uclm.es -p 2020"/>
+               <property name="Adapter.PublishedEndpoints" value="tcp -h cerberus-rpi.uclm.es -p 2121"/>
                <property name="Ice.StdErr" value="${server.distrib}/clip_service.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/clip_service.out"/>
                <property name="ClipService.Seconds" value="5"/>
                <property name="ClipService.Place" value="ITSI-corridor"/>
                <property name="ClipService.Directory" value="${server.distrib}"/>
+               <property name="ClipService.SoundCard" value="1"/>
             </properties>
-            <adapter name="Adapter" endpoints="tcp -p 2020" id="${server}.Adapter">
+            <adapter name="Adapter" endpoints="tcp -p 2121" id="${server}.Adapter">
                <object identity="clip-service"/>
             </adapter>
          </server>

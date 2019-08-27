@@ -69,10 +69,13 @@ simulate-motion:
 	./utils/simulate-motion.py --Ice.Config=config/locator.config
 
 run-test-wiring-service:
-	./tests/wiring-service.py --Ice.Config=config/locator.config WiringService
+	./tests/wiring-service.py --Ice.Config=config/locator-pike.config WiringService
+
+run-dummy-sonoff-client:
+	./utils/pulsesink-client.py "Node -o:tcp -h 161.67.106.38 -p 4455"
 
 connect-authenticator-to-sonoff:
-	./utils/set-observer.py --Ice.Config=config/locator.config "authenticator" "Door -t -e 1.1:tcp -h 161.67.106.89 -p 4455"
+	./utils/set-observer.py --Ice.Config=config/locator.config "authenticator" "Node -o:tcp -h 161.67.106.38 -p 4455"
 
 restart: clean grid-start app-add
 

@@ -18,7 +18,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandService):
-    observer_cast = SmartObject.EventSinkPrx
+    observer_cast = SmartObject.PulseSinkPrx
 
     def __init__(self, properties):
         self.properties = properties
@@ -65,7 +65,7 @@ class AuthenticatorI(citisim.ObservableMixin, SmartObject.AuthenticatedCommandSe
             if self.personID in self.authorized_people.keys():
                 if self.command in self.authorized_people.get(self.personID):
                     if self.metadata_command.get(MetadataField.Place) == self.metadata_personID.get(MetadataField.Place):
-                        self.observer.begin_notify("authorized person", self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
+                        self.observer.begin_notify(self.metadata_personID.get(MetadataField.Place), self.metadata_personID)
                         logging.info("Authorized {} to {}.".format(self.personID, self.command))
                         self.clean_variables()
             else:

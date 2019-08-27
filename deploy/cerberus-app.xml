@@ -131,7 +131,7 @@
                <property name="Adapter.PublishedEndpoints" value="tcp -h pike.esi.uclm.es -p 6066"/>
                <property name="Ice.StdErr" value="${server.distrib}/motion_sensor.err"/>
                <property name="Ice.StdOut" value="${server.distrib}/motion_sensor.out"/>
-               <property name="MotionSensor.MonitoredDirectory" value="/tmp/ftp"/>
+               <property name="MotionSensor.MonitoredDirectory" value="/home/foscam/camera-images/C1_00626E6F30CC/snap"/>
                <property name="MotionSensor.Quality" value="255"/>
                <property name="MotionSensor.Expiration" value="30"/>
                <property name="MotionSensor.Latitude" value="38.99793"/>
